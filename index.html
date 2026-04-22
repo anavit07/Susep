@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SUSEP — Estudo Completo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1117;
+  --bg2: #161b22;
+  --bg3: #1c2230;
+  --border: rgba(255,255,255,0.07);
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --text3: #3d4552;
+  --d1: #f0a500; /* Dia 1 - Capitalização - gold */
+  --d2: #3b82f6; /* Dia 2 - Vida - blue */
+  --d3: #10b981; /* Dia 3 - Ramos 3 - green */
+  --d4: #a855f7; /* Dia 4 - Ramos 4 - purple */
+  --red: #ef4444;
+  --green: #22c55e;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --nav-h: 68px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);overflow-x:hidden}
+.app{display:flex;flex-direction:column;min-height:100vh;max-width:430px;margin:0 auto;position:relative}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:200;padding-bottom:env(safe-area-inset-bottom)}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 12px;border:none;background:none;color:var(--text2);font-size:9px;font-family:'DM Sans',sans-serif;font-weight:500;letter-spacing:.4px;text-transform:uppercase;cursor:pointer;transition:color .2s}
+.nb svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.nb.on{color:var(--text)}
+.nb.on .ni{background:var(--text);border-radius:3px}
+
+/* SCREENS */
+.scr{display:none;flex:1;flex-direction:column;padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));min-height:100vh}
+.scr.on{display:flex}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.scr.on{animation:up .2s ease}
+
+/* HEADERS */
+.hdr{padding:56px 20px 20px;background:var(--bg)}
+.hdr-label{font-size:10px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--text2);margin-bottom:6px}
+.hdr-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1.1;color:var(--text)}
+.hdr-sub{font-size:14px;color:var(--text2);margin-top:6px}
+
+/* CARDS GRID */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 16px}
+.dia-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;cursor:pointer;transition:transform .15s,border-color .15s;position:relative;overflow:hidden}
+.dia-card:active{transform:scale(.97)}
+.dia-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius) var(--radius) 0 0}
+.d1::before{background:var(--d1)}
+.d2::before{background:var(--d2)}
+.d3::before{background:var(--d3)}
+.d4::before{background:var(--d4)}
+.dia-num{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.d1 .dia-num{color:var(--d1)}
+.d2 .dia-num{color:var(--d2)}
+.d3 .dia-num{color:var(--d3)}
+.d4 .dia-num{color:var(--d4)}
+.dia-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;line-height:1.2;color:var(--text);margin-bottom:10px}
+.dia-prog{background:var(--bg3);border-radius:4px;height:5px;overflow:hidden}
+.dia-prog-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.d1 .dia-prog-fill{background:var(--d1)}
+.d2 .dia-prog-fill{background:var(--d2)}
+.d3 .dia-prog-fill{background:var(--d3)}
+.d4 .dia-prog-fill{background:var(--d4)}
+.dia-pct{font-size:11px;color:var(--text2);margin-top:5px}
+
+/* SECTION HEADER */
+.sec-hdr{padding:56px 16px 12px;display:flex;align-items:center;gap:12px}
+.back-btn{width:34px;height:34px;background:var(--bg2);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.back-btn svg{width:16px;height:16px;stroke:var(--text2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sec-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--text)}
+
+/* MODULE LIST */
+.mod-list{padding:0 16px;display:flex;flex-direction:column;gap:8px}
+.mod-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:border-color .2s}
+.mod-item:active{transform:scale(.98)}
+.mod-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.mod-info{flex:1}
+.mod-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text);line-height:1.2}
+.mod-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.mod-arr{color:var(--text3);font-size:18px}
+.check-ring{width:22px;height:22px;border-radius:50%;border:2px solid var(--text3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.check-ring.done{background:var(--green);border-color:var(--green)}
+.check-ring.done::after{content:'✓';font-size:11px;color:white;font-weight:700}
+
+/* CONTENT VIEW */
+.content-view{display:none;flex-direction:column;min-height:100vh;padding-bottom:calc(var(--nav-h) + 20px)}
+.content-view.on{display:flex}
+.content-body{padding:0 16px;display:flex;flex-direction:column;gap:14px}
+.c-block{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.c-block-hdr{padding:14px 16px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.c-block-icon{font-size:16px}
+.c-block-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text)}
+.c-block-body{padding:14px 16px}
+.c-block-body p{font-size:14px;line-height:1.65;color:var(--text2);margin-bottom:10px}
+.c-block-body p:last-child{margin-bottom:0}
+.c-block-body strong{color:var(--text);font-weight:600}
+.c-block-body ul{padding-left:16px;display:flex;flex-direction:column;gap:6px}
+.c-block-body li{font-size:13.5px;color:var(--text2);line-height:1.5}
+.c-block-body li strong{color:var(--text)}
+.tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.5px;padding:3px 8px;border-radius:6px;text-transform:uppercase;margin-bottom:10px}
+.tag.warn{background:rgba(240,165,0,.12);color:var(--d1)}
+.tag.info{background:rgba(59,130,246,.12);color:var(--d2)}
+.tag.tip{background:rgba(16,185,129,.12);color:var(--d3)}
+.tag.alert{background:rgba(239,68,68,.12);color:var(--red)}
+
+/* COMPARE TABLE */
+.comp-table{width:100%;border-collapse:collapse;font-size:13px}
+.comp-table th{background:var(--bg3);padding:10px 12px;text-align:left;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--text2)}
+.comp-table td{padding:10px 12px;border-top:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.4}
+.comp-table td:first-child{font-weight:600;color:var(--text)}
+.comp-table tr:last-child td{border-bottom:none}
+
+/* DONE BTN */
+.done-btn{margin:0 16px;padding:15px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text2);cursor:pointer;transition:all .2s;text-align:center}
+.done-btn.marked{background:var(--green);border-color:var(--green);color:white}
+
+/* FLASHCARDS */
+.card-area{padding:0 16px 16px;flex:1;display:flex;flex-direction:column;gap:12px}
+.card-filter{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.card-filter::-webkit-scrollbar{display:none}
+.cf-btn{flex-shrink:0;padding:7px 14px;border-radius:20px;background:var(--bg2);border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.cf-btn.on{border-color:currentColor}
+.cf-d1.on{color:var(--d1);background:rgba(240,165,0,.08)}
+.cf-d2.on{color:var(--d2);background:rgba(59,130,246,.08)}
+.cf-d3.on{color:var(--d3);background:rgba(16,185,129,.08)}
+.cf-d4.on{color:var(--d4);background:rgba(168,85,247,.08)}
+.cf-all.on{color:var(--text);background:var(--bg3)}
+
+.flash-wrap{perspective:1200px;height:240px;cursor:pointer}
+.flash-inner{width:100%;height:100%;transition:transform .5s cubic-bezier(.25,.46,.45,.94);transform-style:preserve-3d;position:relative}
+.flash-inner.flipped{transform:rotateY(180deg)}
+.flash-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:var(--radius);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;text-align:center}
+.flash-front{background:var(--bg2);border:1px solid var(--border)}
+.flash-back{transform:rotateY(180deg);border:1px solid transparent}
+.flash-hint{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:16px}
+.flash-q{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text);line-height:1.3}
+.flash-a{font-size:15px;color:white;line-height:1.5}
+.flash-nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.fn-btn{width:44px;height:44px;background:var(--bg2);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--text2);transition:all .2s}
+.fn-btn:active{transform:scale(.9)}
+.fn-ctr{text-align:center;flex:1}
+.fn-count{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
+.fn-sub{font-size:11px;color:var(--text2)}
+.know-row{display:flex;gap:10px}
+.know-btn{flex:1;padding:11px;border-radius:var(--radius-sm);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s}
+.know-btn:active{transform:scale(.97)}
+.know-btn.no{background:rgba(239,68,68,.15);color:var(--red)}
+.know-btn.yes{background:rgba(34,197,94,.15);color:var(--green)}
+
+/* QUIZ */
+.quiz-area{padding:0 16px;display:flex;flex-direction:column;gap:14px}
+.quiz-prog-bar{background:var(--bg2);border-radius:4px;height:4px;overflow:hidden}
+.quiz-prog-fill{height:100%;background:var(--d2);border-radius:4px;transition:width .4s ease}
+.quiz-q-num{font-size:12px;color:var(--text2);font-weight:600}
+.quiz-q-text{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text);line-height:1.4}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;cursor:pointer;font-size:14px;color:var(--text2);line-height:1.4;text-align:left;font-family:'DM Sans',sans-serif;transition:all .15s}
+.quiz-opt:active{transform:scale(.99)}
+.quiz-opt.selected{border-color:var(--d2);color:var(--d2);background:rgba(59,130,246,.05)}
+.quiz-opt.correct{border-color:var(--green);color:var(--green);background:rgba(34,197,94,.08)}
+.quiz-opt.wrong{border-color:var(--red);color:var(--red);background:rgba(239,68,68,.08)}
+.quiz-opt.revealed{opacity:.5}
+.quiz-exp{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;font-size:13.5px;color:var(--text2);line-height:1.6;display:none}
+.quiz-exp.show{display:block}
+.quiz-exp strong{color:var(--text)}
+.quiz-next-btn,.quiz-start-btn{background:var(--text);color:var(--bg);padding:14px;border-radius:var(--radius-sm);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;border:none;width:100%;transition:opacity .2s}
+.quiz-next-btn:active,.quiz-start-btn:active{opacity:.8}
+.quiz-score-row{display:flex;gap:10px}
+.quiz-score-box{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center}
+.quiz-score-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--text)}
+.quiz-score-lbl{font-size:11px;color:var(--text2);margin-top:2px}
+.quiz-result-pct{font-family:'Syne',sans-serif;font-size:64px;font-weight:800;text-align:center;color:var(--text);line-height:1}
+.quiz-result-msg{font-size:15px;color:var(--text2);text-align:center;line-height:1.5;padding:0 20px}
+.quiz-filter{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.quiz-filter::-webkit-scrollbar{display:none}
+.qf-btn{flex-shrink:0;padding:7px 14px;border-radius:20px;background:var(--bg2);border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.qf-btn.on{border-color:var(--d2);color:var(--d2);background:rgba(59,130,246,.08)}
+
+/* TIMER */
+.timer-area{display:flex;flex-direction:column;align-items:center;gap:24px;padding:0 16px}
+.timer-modes{display:flex;background:var(--bg2);border-radius:12px;padding:4px;gap:4px}
+.tm-btn{flex:1;padding:9px 12px;border-radius:9px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;border:none;background:none;color:var(--text2);cursor:pointer;transition:all .2s;white-space:nowrap}
+.tm-btn.on{background:var(--bg3);color:var(--text)}
+.timer-ring{width:200px;height:200px;position:relative}
+.timer-ring svg{transform:rotate(-90deg)}
+.timer-ring circle{transition:stroke-dashoffset .8s linear;stroke-linecap:round}
+.timer-disp{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.timer-time{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;color:var(--text);letter-spacing:-1px}
+.timer-label{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-top:2px}
+.timer-ctrl-row{display:flex;gap:12px;align-items:center}
+.t-btn-main{background:var(--text);color:var(--bg);padding:14px 40px;border-radius:var(--radius);font-family:'Syne',sans-serif;font-size:16px;font-weight:700;border:none;cursor:pointer;transition:opacity .2s}
+.t-btn-main:active{opacity:.8}
+.t-btn-reset{width:44px;height:44px;background:var(--bg2);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--text2)}
+.timer-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%}
+.ts-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center}
+.ts-val{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text)}
+.ts-lbl{font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--text2);margin-top:3px}
+
+/* AI CHAT */
+.ai-bubble{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.ai-input-row{display:flex;gap:8px;padding:10px}
+.ai-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none}
+.ai-input::placeholder{color:var(--text3)}
+.ai-send{width:40px;height:40px;background:var(--text);border:none;border-radius:var(--radius-sm);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s}
+.ai-send:active{opacity:.7}
+.ai-send svg{width:18px;height:18px;stroke:var(--bg);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ai-msgs{padding:0 12px 12px;display:flex;flex-direction:column;gap:10px;max-height:300px;overflow-y:auto}
+.ai-msg{font-size:14px;line-height:1.6;padding:12px 14px;border-radius:var(--radius-sm)}
+.ai-msg.user{background:var(--bg3);color:var(--text2);align-self:flex-end;max-width:85%}
+.ai-msg.bot{background:rgba(59,130,246,.08);color:var(--text2);border:1px solid rgba(59,130,246,.2)}
+.ai-loading{font-size:13px;color:var(--text3);padding:12px 14px}
+
+/* SCROLL */
+.scroll-content{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+.scroll-content::-webkit-scrollbar{display:none}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:10px;font-size:10px;font-weight:700;padding:0 6px;background:var(--bg3);color:var(--text2)}
+
+/* EXAM INFO */
+.exam-info{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin:0 16px 16px;display:flex;flex-direction:column;gap:8px}
+.exam-info-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.exam-info-label{color:var(--text2)}
+.exam-info-val{font-weight:600;color:var(--text)}
+.progress-overall{background:var(--bg3);border-radius:6px;height:8px;overflow:hidden;margin-top:4px}
+.progress-overall-fill{height:100%;background:linear-gradient(90deg,var(--d1),var(--d2),var(--d3),var(--d4));border-radius:6px;transition:width .8s ease}
+
+/* SCROLLABLE x */
+.scroll-x{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.scroll-x::-webkit-scrollbar{display:none}
+
+/* HIGHLIGHT */
+.hl{color:var(--d1);font-weight:700}
+.hl2{color:var(--d2);font-weight:700}
+.hl3{color:var(--d3);font-weight:700}
+.hl4{color:var(--d4);font-weight:700}
+
+/* SPACING */
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mb16{margin-bottom:16px}.ph16{padding:0 16px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nb on" onclick="goScreen('home')">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Início
+  </button>
+  <button class="nb" onclick="goScreen('study')">
+    <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+    Estudar
+  </button>
+  <button class="nb" onclick="goScreen('cards')">
+    <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    Cards
+  </button>
+  <button class="nb" onclick="goScreen('quiz')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    Simulado
+  </button>
+  <button class="nb" onclick="goScreen('timer')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Timer
+  </button>
+</nav>
+
+<!-- ═══════════════════════ HOME SCREEN ═══════════════════════ -->
+<div id="scr-home" class="scr on scroll-content">
+  <div class="hdr">
+    <div class="hdr-label">Sua jornada</div>
+    <div class="hdr-title">SUSEP<br>Completo</div>
+    <div class="hdr-sub">4 dias de prova · 200 questões · 70% para aprovação</div>
+  </div>
+  <div class="exam-info" style="margin:0 16px 16px">
+    <div class="exam-info-row"><span class="exam-info-label">Progresso geral</span><span class="exam-info-val" id="home-pct">0%</span></div>
+    <div class="progress-overall"><div class="progress-overall-fill" id="home-bar" style="width:0%"></div></div>
+    <div class="exam-info-row mt8"><span class="exam-info-label">Módulos concluídos</span><span class="exam-info-val" id="home-done">0 / 20</span></div>
+    <div class="exam-info-row"><span class="exam-info-label">Aprovação mínima</span><span class="exam-info-val" style="color:var(--green)">70% por dia</span></div>
+  </div>
+  <div class="grid">
+    <div class="dia-card d1" onclick="openDia(0)">
+      <div class="dia-num">Dia 1</div>
+      <div class="dia-name">Capitalização</div>
+      <div class="dia-prog"><div class="dia-prog-fill" id="pg-d0" style="width:0%"></div></div>
+      <div class="dia-pct" id="pc-d0">6 módulos · 0%</div>
+    </div>
+    <div class="dia-card d2" onclick="openDia(1)">
+      <div class="dia-num">Dia 2</div>
+      <div class="dia-name">Vida &amp; Prev.</div>
+      <div class="dia-prog"><div class="dia-prog-fill" id="pg-d1" style="width:0%"></div></div>
+      <div class="dia-pct" id="pc-d1">5 módulos · 0%</div>
+    </div>
+    <div class="dia-card d3" onclick="openDia(2)">
+      <div class="dia-num">Dia 3</div>
+      <div class="dia-name">Ramos (a)</div>
+      <div class="dia-prog"><div class="dia-prog-fill" id="pg-d2" style="width:0%"></div></div>
+      <div class="dia-pct" id="pc-d2">5 módulos · 0%</div>
+    </div>
+    <div class="dia-card d4" onclick="openDia(3)">
+      <div class="dia-num">Dia 4</div>
+      <div class="dia-name">Ramos (b)</div>
+      <div class="dia-prog"><div class="dia-prog-fill" id="pg-d3" style="width:0%"></div></div>
+      <div class="dia-pct" id="pc-d3">4 módulos · 0%</div>
+    </div>
+  </div>
+  <div style="padding:0 16px 16px">
+    <div class="c-block">
+      <div class="c-block-hdr"><span class="c-block-icon">📋</span><span class="c-block-title">Estrutura da Prova</span></div>
+      <div class="c-block-body">
+        <table class="comp-table">
+          <tr><th>Dia</th><th>Módulos</th><th>Questões</th></tr>
+          <tr><td style="color:var(--d1)">Dia 1</td><td>Capitalização</td><td>50</td></tr>
+          <tr><td style="color:var(--d2)">Dia 2</td><td>Vida &amp; Prev.</td><td>50</td></tr>
+          <tr><td style="color:var(--d3)">Dia 3</td><td>Demais Ramos (a)</td><td>50</td></tr>
+          <tr><td style="color:var(--d4)">Dia 4</td><td>Demais Ramos (b)</td><td>50</td></tr>
+        </table>
+        <p style="margin-top:10px;font-size:13px">⏱ 2 horas por dia · Mínimo 70% (35/50) · Não pode zerar nenhum módulo</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ STUDY SCREEN ═══════════════════════ -->
+<div id="scr-study" class="scr scroll-content">
+  <!-- Dia list -->
+  <div id="study-dias">
+    <div class="hdr">
+      <div class="hdr-label">Conteúdo</div>
+      <div class="hdr-title">Escolha<br>o módulo</div>
+    </div>
+    <div class="mod-list" id="study-dia-list">
+      <div class="mod-item d1" onclick="openDia(0)">
+        <div class="mod-icon" style="background:rgba(240,165,0,.12)">📊</div>
+        <div class="mod-info"><div class="mod-title" style="color:var(--d1)">Dia 1 — Capitalização</div><div class="mod-sub">6 módulos</div></div>
+        <div class="mod-arr">›</div>
+      </div>
+      <div class="mod-item d2" onclick="openDia(1)">
+        <div class="mod-icon" style="background:rgba(59,130,246,.12)">🏥</div>
+        <div class="mod-info"><div class="mod-title" style="color:var(--d2)">Dia 2 — Vida &amp; Previdência</div><div class="mod-sub">5 módulos</div></div>
+        <div class="mod-arr">›</div>
+      </div>
+      <div class="mod-item d3" onclick="openDia(2)">
+        <div class="mod-icon" style="background:rgba(16,185,129,.12)">🚛</div>
+        <div class="mod-info"><div class="mod-title" style="color:var(--d3)">Dia 3 — Demais Ramos (a)</div><div class="mod-sub">5 módulos</div></div>
+        <div class="mod-arr">›</div>
+      </div>
+      <div class="mod-item d4" onclick="openDia(3)">
+        <div class="mod-icon" style="background:rgba(168,85,247,.12)">🏗️</div>
+        <div class="mod-info"><div class="mod-title" style="color:var(--d4)">Dia 4 — Demais Ramos (b)</div><div class="mod-sub">4 módulos</div></div>
+        <div class="mod-arr">›</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module list for a dia -->
+  <div id="study-mods" style="display:none">
+    <div class="sec-hdr">
+      <div class="back-btn" onclick="backToDias()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="sec-title" id="mods-title">Módulos</div>
+    </div>
+    <div class="mod-list" id="mods-list"></div>
+    <div style="height:16px"></div>
+  </div>
+
+  <!-- Content view -->
+  <div id="study-content" style="display:none;padding-bottom:calc(var(--nav-h) + 20px)">
+    <div class="sec-hdr">
+      <div class="back-btn" onclick="backToMods()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="sec-title" id="content-title">Módulo</div>
+    </div>
+    <div class="content-body" id="content-body"></div>
+    <div style="height:16px"></div>
+    <button class="done-btn" id="done-btn" onclick="toggleDone()">✓ Marcar como concluído</button>
+    <div style="height:16px"></div>
+    <div style="padding:0 16px">
+      <div class="ai-bubble">
+        <div class="ai-msgs" id="ai-msgs"></div>
+        <div class="ai-input-row">
+          <input class="ai-input" id="ai-input" placeholder="Pergunta sobre este módulo..." />
+          <button class="ai-send" onclick="sendAI()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ CARDS SCREEN ═══════════════════════ -->
+<div id="scr-cards" class="scr scroll-content">
+  <div class="hdr">
+    <div class="hdr-label">Memória</div>
+    <div class="hdr-title">Flashcards</div>
+  </div>
+  <div class="card-area">
+    <div class="card-filter scroll-x">
+      <button class="cf-btn cf-all on" onclick="filterCards('all',this)">Todos</button>
+      <button class="cf-btn cf-d1" onclick="filterCards(0,this)">Dia 1</button>
+      <button class="cf-btn cf-d2" onclick="filterCards(1,this)">Dia 2</button>
+      <button class="cf-btn cf-d3" onclick="filterCards(2,this)">Dia 3</button>
+      <button class="cf-btn cf-d4" onclick="filterCards(3,this)">Dia 4</button>
+    </div>
+    <div class="flash-wrap" onclick="flipCard()">
+      <div class="flash-inner" id="flash-inner">
+        <div class="flash-face flash-front">
+          <div class="flash-hint">TOQUE PARA VIRAR</div>
+          <div class="flash-q" id="flash-q">Carregando...</div>
+        </div>
+        <div class="flash-face flash-back" id="flash-back" style="background:var(--d2)">
+          <div class="flash-hint" style="color:rgba(255,255,255,.5)">RESPOSTA</div>
+          <div class="flash-a" id="flash-a"></div>
+        </div>
+      </div>
+    </div>
+    <div class="flash-nav">
+      <div class="fn-btn" onclick="prevCard()">←</div>
+      <div class="fn-ctr">
+        <div class="fn-count" id="flash-count">1/1</div>
+        <div class="fn-sub" id="flash-tag">—</div>
+      </div>
+      <div class="fn-btn" onclick="nextCard()">→</div>
+    </div>
+    <div class="know-row">
+      <button class="know-btn no" onclick="knowNo()">❌ Rever</button>
+      <button class="know-btn yes" onclick="knowYes()">✅ Dominei</button>
+    </div>
+    <div class="c-block">
+      <div class="c-block-hdr"><span class="c-block-icon">📊</span><span class="c-block-title">Seus acertos</span></div>
+      <div class="c-block-body">
+        <div style="display:flex;gap:16px;font-size:14px">
+          <span>✅ <strong id="know-yes-cnt">0</strong> dominados</span>
+          <span>❌ <strong id="know-no-cnt">0</strong> a rever</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ QUIZ SCREEN ═══════════════════════ -->
+<div id="scr-quiz" class="scr scroll-content">
+  <div class="hdr">
+    <div class="hdr-label">Simulado</div>
+    <div class="hdr-title">Questões</div>
+  </div>
+  <div class="quiz-area" id="quiz-area">
+    <div class="quiz-filter scroll-x">
+      <button class="qf-btn on" onclick="setQuizFilter('all',this)">Todos os dias</button>
+      <button class="qf-btn" onclick="setQuizFilter(0,this)">Dia 1</button>
+      <button class="qf-btn" onclick="setQuizFilter(1,this)">Dia 2</button>
+      <button class="qf-btn" onclick="setQuizFilter(2,this)">Dia 3</button>
+      <button class="qf-btn" onclick="setQuizFilter(3,this)">Dia 4</button>
+    </div>
+    <button class="quiz-start-btn" onclick="startQuiz()">▶ Iniciar Simulado</button>
+  </div>
+  <div id="quiz-play" style="display:none;padding:0 16px 16px;flex-direction:column;gap:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="quiz-q-num" id="quiz-num">Questão 1 de 20</div>
+      <div class="badge" id="quiz-score-live">✅0 ❌0</div>
+    </div>
+    <div class="quiz-prog-bar"><div class="quiz-prog-fill" id="quiz-prog" style="width:5%"></div></div>
+    <div class="quiz-q-text" id="quiz-q"></div>
+    <div class="quiz-opts" id="quiz-opts"></div>
+    <div class="quiz-exp" id="quiz-exp"></div>
+    <button class="quiz-next-btn" id="quiz-next" onclick="nextQ()" style="display:none">Próxima →</button>
+  </div>
+  <div id="quiz-result" style="display:none;padding:0 16px;flex-direction:column;gap:16px;align-items:center">
+    <div class="quiz-result-pct" id="result-pct">0%</div>
+    <div class="quiz-result-msg" id="result-msg"></div>
+    <div class="quiz-score-row" style="width:100%">
+      <div class="quiz-score-box"><div class="quiz-score-val" id="r-correct" style="color:var(--green)">0</div><div class="quiz-score-lbl">Corretas</div></div>
+      <div class="quiz-score-box"><div class="quiz-score-val" id="r-wrong" style="color:var(--red)">0</div><div class="quiz-score-lbl">Erradas</div></div>
+      <div class="quiz-score-box"><div class="quiz-score-val" id="r-total">0</div><div class="quiz-score-lbl">Total</div></div>
+    </div>
+    <button class="quiz-next-btn" onclick="restartQuiz()">↺ Refazer</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TIMER SCREEN ═══════════════════════ -->
+<div id="scr-timer" class="scr scroll-content">
+  <div class="hdr">
+    <div class="hdr-label">Pomodoro</div>
+    <div class="hdr-title">Timer</div>
+  </div>
+  <div class="timer-area">
+    <div class="timer-modes">
+      <button class="tm-btn on" onclick="setMode('focus',this)">🎯 Foco 25'</button>
+      <button class="tm-btn" onclick="setMode('short',this)">☕ Pausa 5'</button>
+      <button class="tm-btn" onclick="setMode('long',this)">🌿 Longa 15'</button>
+    </div>
+    <div class="timer-ring">
+      <svg width="200" height="200" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="88" stroke="var(--bg2)" stroke-width="10" fill="none"/>
+        <circle id="ring-arc" cx="100" cy="100" r="88" stroke="var(--d2)" stroke-width="10" fill="none"
+          stroke-dasharray="553" stroke-dashoffset="0"/>
+      </svg>
+      <div class="timer-disp">
+        <div class="timer-time" id="t-display">25:00</div>
+        <div class="timer-label" id="t-label">FOCO TOTAL</div>
+      </div>
+    </div>
+    <div class="timer-ctrl-row">
+      <div class="t-btn-reset" onclick="resetTimer()">↺</div>
+      <button class="t-btn-main" id="t-start" onclick="toggleTimer()">Iniciar</button>
+    </div>
+    <div class="timer-stats">
+      <div class="ts-box"><div class="ts-val" id="t-today">0</div><div class="ts-lbl">Sessões hoje</div></div>
+      <div class="ts-box"><div class="ts-val" id="t-total">0h</div><div class="ts-lbl">Total</div></div>
+      <div class="ts-box"><div class="ts-val" id="t-streak">0</div><div class="ts-lbl">Dias seguidos</div></div>
+    </div>
+    <div id="t-log" class="c-block" style="width:100%">
+      <div class="c-block-body"><p id="t-log-text" style="font-size:13px">Nenhuma sessão concluída hoje.</p></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- .app -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+
+const DIAS = [
+  {
+    name:'Capitalização', color:'var(--d1)',
+    mods:[
+      {
+        id:'d0m0', icon:'⚖️', name:'Teoria Geral do Seguro',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'📌', title:'O que é Seguro?',
+           text:`<p>Seguro é a <strong>transferência de risco</strong> de uma pessoa (segurado) para uma empresa (seguradora) mediante pagamento de um valor chamado <strong>prêmio</strong>.</p>
+           <p><strong>Objetivo:</strong> garantir a reposição de um bem ou minimizar a perda. <strong>Finalidade:</strong> restabelecer o equilíbrio econômico perturbado.</p>
+           <p class="tag warn">⚠️ O seguro NÃO pode gerar lucro para o segurado — princípio do mutualismo!</p>
+           <p><strong>Características:</strong> Previdência · Incerteza · Mutualismo</p>`},
+          {type:'block', icon:'🏛️', title:'Sistema Nacional de Seguros Privados (SNSP)',
+           text:`<p>Instituído pelo <strong>Decreto-Lei nº 73/1966</strong>. Subordinado ao <strong>Ministério da Fazenda</strong>.</p>
+           <table class="comp-table" style="margin-top:8px"><tr><th>Componente</th><th>Função</th></tr>
+           <tr><td>CNSP</td><td>Normatiza — fixa diretrizes e normas</td></tr>
+           <tr><td>SUSEP</td><td>Fiscaliza — executa a política do CNSP</td></tr>
+           <tr><td>Resseguradores</td><td>Assumem riscos das seguradoras</td></tr>
+           <tr><td>Seguradoras</td><td>Comercializam seguros (S.A.)</td></tr>
+           <tr><td>Corretores</td><td>Intermediários legalmente habilitados</td></tr></table>
+           <p class="tag alert" style="margin-top:10px">🚨 ATENÇÃO: Capitalização e Saúde NÃO integram o SNSP!</p>`},
+          {type:'block', icon:'🔑', title:'Elementos Essenciais do Seguro',
+           text:`<ul>
+           <li><strong>Risco:</strong> evento futuro, incerto, possível, mensurável e independente da vontade das partes</li>
+           <li><strong>Segurado:</strong> PF ou PJ que tem interesse econômico no bem exposto ao risco</li>
+           <li><strong>Seguradora:</strong> S.A. que assume e gere os riscos</li>
+           <li><strong>Prêmio:</strong> preço do seguro — pago em parcelas ou à vista</li>
+           <li><strong>Indenização:</strong> contraprestação da seguradora em caso de sinistro</li></ul>
+           <p style="margin-top:10px"><strong>Risco Puro:</strong> perder ou não perder · <strong>Risco Especulativo:</strong> vedado por lei (pode gerar lucro)</p>`},
+          {type:'block', icon:'📄', title:'Instrumentos Contratuais',
+           text:`<ul>
+           <li><strong>Proposta:</strong> solicitação do segurado; prazo de análise: 15 dias (danos) ou 7 dias (pessoas)</li>
+           <li><strong>Apólice:</strong> contrato principal; emitida pela seguradora</li>
+           <li><strong>Endosso/Aditivo:</strong> alteração da apólice</li>
+           <li><strong>Bilhete de Seguro:</strong> contratação simplificada</li>
+           <li><strong>Certificado:</strong> comprovante em seguro coletivo</li>
+           <li><strong>Averbação:</strong> comunicação de novo bem/risco coberto</li></ul>`},
+        ]},
+      {
+        id:'d0m1', icon:'🔢', name:'Matemática Financeira',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'📐', title:'Conceitos Fundamentais',
+           text:`<p><strong>Capitalização Simples:</strong> juros incidem só sobre o capital inicial.<br>Fórmula: <span class="hl">M = C × (1 + i × n)</span></p>
+           <p style="margin-top:8px"><strong>Capitalização Composta:</strong> juros incidem sobre juros anteriores.<br>Fórmula: <span class="hl">M = C × (1 + i)ⁿ</span></p>
+           <p class="tag info" style="margin-top:8px">💡 Seguros e previdência sempre usam capitalização composta!</p>`},
+          {type:'block', icon:'📊', title:'Taxas e Equivalências',
+           text:`<ul>
+           <li><strong>Taxa nominal:</strong> expressa em período diferente do de capitalização</li>
+           <li><strong>Taxa efetiva:</strong> mesma base do período de capitalização</li>
+           <li><strong>Taxa real:</strong> descontada a inflação</li>
+           <li><strong>VP (Valor Presente):</strong> valor hoje de um fluxo futuro</li>
+           <li><strong>VF (Valor Futuro):</strong> valor a receber no futuro</li></ul>
+           <p style="margin-top:8px"><strong>Desconto comercial (por fora):</strong> D = N × d × n</p>
+           <p><strong>Desconto racional (por dentro):</strong> D = N × i × n / (1 + i × n)</p>`},
+          {type:'block', icon:'🏦', title:'Séries de Pagamentos',
+           text:`<p><strong>Anuidade:</strong> série de pagamentos periódicos iguais.</p>
+           <ul>
+           <li><strong>Ordinária (postecipada):</strong> pagamento no fim do período</li>
+           <li><strong>Antecipada:</strong> pagamento no início do período</li>
+           <li><strong>Perpétua:</strong> pagamentos eternos — PV = PMT / i</li></ul>
+           <p class="tag tip" style="margin-top:8px">✅ Prêmios de seguro = anuidade ordinária — vencimento pós-contratação</p>`},
+        ]},
+      {
+        id:'d0m2', icon:'⚖️', name:'Direito e Legislação do Seguro',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'📜', title:'Código Civil — Seguros (Art. 757-802)',
+           text:`<ul>
+           <li>Art. 757: seguro é contrato aleatório</li>
+           <li>Art. 765: <strong>boa-fé</strong> é essencial — omissões ou falsidades geram nulidade</li>
+           <li>Art. 768: o segurado que agravar intencionalmente o risco perde direito à indenização</li>
+           <li>Art. 771: aviso de sinistro deve ser imediato</li>
+           <li>Art. 772: prescrição em <strong>1 ano</strong> para seguros em geral</li>
+           <li>Art. 793: beneficiário indigno perde direito ao capital segurado</li></ul>
+           <p class="tag alert" style="margin-top:10px">🚨 Contrato de seguro é: bilateral, oneroso, aleatório e de adesão</p>`},
+          {type:'block', icon:'📋', title:'Princípios Contratuais',
+           text:`<ul>
+           <li><strong>Mutualismo:</strong> pulverização do risco entre muitos segurados</li>
+           <li><strong>Boa-fé:</strong> dever de lealdade e veracidade das partes</li>
+           <li><strong>Interesse segurável:</strong> o segurado deve ter interesse econômico no bem</li>
+           <li><strong>Sub-rogação:</strong> seguradora assume direito do segurado de cobrar o causador do dano</li>
+           <li><strong>Indenização:</strong> limite = valor do prejuízo (sem lucro)</li></ul>`},
+          {type:'block', icon:'🛑', title:'LGPD — Proteção de Dados',
+           text:`<p>A Lei Geral de Proteção de Dados (Lei 13.709/2018) estabelece regras para tratamento de dados pessoais.</p>
+           <ul>
+           <li><strong>Dado sensível:</strong> origem racial, convicção religiosa, saúde, biométrico — requer consentimento específico</li>
+           <li><strong>Titular:</strong> tem direito a acesso, correção, eliminação e portabilidade dos dados</li>
+           <li><strong>Consentimento:</strong> deve ser livre, informado, específico e inequívoco</li>
+           <li><strong>ANPD:</strong> Autoridade Nacional de Proteção de Dados — órgão fiscalizador</li></ul>
+           <p class="tag warn" style="margin-top:8px">⚠️ Dados de saúde = dado sensível. Operadoras não podem usar para seleção de risco!</p>`},
+        ]},
+      {
+        id:'d0m3', icon:'💰', name:'Mercado Financeiro',
+        sub:'5 questões na prova',
+        content:[
+          {type:'block', icon:'🏦', title:'Sistema Financeiro Nacional (SFN)',
+           text:`<p>Composto por <strong>órgãos normativos, supervisores e operadores</strong>.</p>
+           <table class="comp-table" style="margin-top:8px"><tr><th>Órgão</th><th>Função</th></tr>
+           <tr><td>CMN</td><td>Normatiza o SFN</td></tr>
+           <tr><td>BACEN</td><td>Executa política monetária, regula bancos</td></tr>
+           <tr><td>CVM</td><td>Regula mercado de capitais, valores mobiliários</td></tr>
+           <tr><td>CNSP</td><td>Regula seguros privados</td></tr>
+           <tr><td>SUSEP</td><td>Fiscaliza seguros, previdência aberta, capitalização</td></tr>
+           <tr><td>PREVIC</td><td>Fiscaliza fundos de pensão (EFPC)</td></tr>
+           <tr><td>ANS</td><td>Regula saúde suplementar</td></tr></table>`},
+          {type:'block', icon:'📈', title:'Produtos Financeiros — Renda Fixa',
+           text:`<ul>
+           <li><strong>CDB:</strong> título emitido por bancos; garantido pelo FGC (até R$250k)</li>
+           <li><strong>LCI/LCA:</strong> isentos de IR para PF; vinculados a crédito imobiliário/agronegócio</li>
+           <li><strong>Debêntures:</strong> emitidas por empresas; não têm garantia FGC</li>
+           <li><strong>Tesouro Direto:</strong> títulos públicos federais</li>
+           <li><strong>Poupança:</strong> liquidez diária; rendimento: TR + 0,5% a.m. (SELIC ≤ 8,5%) ou 70% SELIC</li></ul>`},
+          {type:'block', icon:'🔄', title:'Open Banking e Open Insurance',
+           text:`<p><strong>Open Banking (BACEN):</strong> compartilhamento padronizado de dados e serviços bancários via APIs. Depende de consentimento do cliente.</p>
+           <p style="margin-top:8px"><strong>Open Insurance (SUSEP):</strong> mesmo conceito aplicado ao mercado de seguros, previdência e capitalização. Permite ao consumidor comparar e migrar entre produtos com facilidade.</p>
+           <p class="tag tip" style="margin-top:8px">✅ Compartilhamento sempre exige consentimento prévio do titular dos dados</p>`},
+        ]},
+      {
+        id:'d0m4', icon:'🤝', name:'Estratégia e Comercialização',
+        sub:'5 questões na prova',
+        content:[
+          {type:'block', icon:'📋', title:'Processo de Venda Consultiva',
+           text:`<ol style="padding-left:16px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text2)">
+           <li><strong style="color:var(--text)">Prospecção:</strong> identificar potenciais clientes</li>
+           <li><strong style="color:var(--text)">Abordagem:</strong> primeiro contato, criar rapport</li>
+           <li><strong style="color:var(--text)">Levantamento de necessidades (LPN):</strong> entender o perfil e necessidades do cliente — etapa mais importante!</li>
+           <li><strong style="color:var(--text)">Apresentação da solução:</strong> proposta adequada ao perfil</li>
+           <li><strong style="color:var(--text)">Fechamento:</strong> concretização da venda</li>
+           <li><strong style="color:var(--text)">Pós-venda:</strong> fidelização e acompanhamento</li></ol>
+           <p class="tag tip" style="margin-top:10px">✅ Venda consultiva ≠ venda por pressão. O foco é a necessidade do cliente!</p>`},
+          {type:'block', icon:'🚫', title:'Venda Casada — Proibições',
+           text:`<p><strong>Venda casada</strong> = condicionar a venda de um produto à compra de outro. É <strong>proibida</strong> pelo Código de Defesa do Consumidor (CDC) e pela regulação da SUSEP.</p>
+           <p class="tag alert" style="margin-top:8px">🚨 Proibido: exigir seguro para liberar crédito, condicionar abertura de conta à contratação de previdência, etc.</p>
+           <p style="margin-top:8px"><strong>Permitido:</strong> oferecer desconto ou vantagem para quem contratar mais de um produto — desde que a contratação seja opcional.</p>`},
+          {type:'block', icon:'⚖️', title:'Ética e Compliance na Venda de Seguros',
+           text:`<ul>
+           <li>Corretor deve agir no interesse do <strong>cliente</strong>, não apenas da seguradora</li>
+           <li>É vedado ao corretor omitir informações relevantes ao segurado</li>
+           <li>Propaganda deve ser verídica e não criar expectativas falsas</li>
+           <li>Conflito de interesses deve ser declarado</li>
+           <li>Sigilo das informações do cliente é obrigatório (LGPD)</li></ul>
+           <p class="tag info" style="margin-top:8px">📌 Perfil do cliente (Suitability): corretor deve recomendar produtos adequados ao perfil de risco e necessidade do cliente</p>`},
+        ]},
+      {
+        id:'d0m5', icon:'🎟️', name:'Capitalização',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'📋', title:'O que é Capitalização?',
+           text:`<p>Título de capitalização é um <strong>produto financeiro</strong> (não é seguro!) que combina:</p>
+           <ul>
+           <li>📈 <strong>Poupança programada</strong> (quota de capitalização)</li>
+           <li>🎰 <strong>Sorteios</strong> (quota de sorteio)</li>
+           <li>💼 <strong>Taxa de carregamento</strong> (despesas operacionais)</li></ul>
+           <p class="tag alert" style="margin-top:10px">🚨 Capitalização NÃO é seguro! Mas é fiscalizada pela SUSEP e regulada pelo CNSP</p>
+           <p style="margin-top:8px">Regulamentação: <strong>Decreto-Lei nº 261/1967</strong></p>`},
+          {type:'block', icon:'🗂️', title:'Modalidades dos Títulos',
+           text:`<table class="comp-table"><tr><th>Modalidade</th><th>Objetivo principal</th></tr>
+           <tr><td>Tradicional</td><td>Poupança + sorteio (uso geral)</td></tr>
+           <tr><td>Instrumento de Garantia</td><td>Substituir fiador/caução em contratos</td></tr>
+           <tr><td>Compra Programada</td><td>Acumulação para compra futura de bem/serviço</td></tr>
+           <tr><td>Popular</td><td>Baixo custo; foco em sorteio (quota de sorteio ≥ 5% obrigatório)</td></tr>
+           <tr><td>Incentivo</td><td>Ação de marketing (brinde, prêmio)</td></tr>
+           <tr><td>Filantropia Premiável</td><td>Parte da quota de sorteio vai para entidade filantrópica</td></tr></table>`},
+          {type:'block', icon:'💰', title:'Quotas e Resgate',
+           text:`<ul>
+           <li><strong>Quota de Capitalização:</strong> % destinado à poupança — vai para a Provisão Matemática</li>
+           <li><strong>Quota de Sorteio:</strong> % usado para financiar os prêmios dos sorteios</li>
+           <li><strong>Quota de Carregamento:</strong> % das despesas operacionais da sociedade</li></ul>
+           <p style="margin-top:10px"><strong>Resgate Parcial:</strong> durante vigência, com carência mínima</p>
+           <p><strong>Resgate Total:</strong> ao fim do prazo — recebe 100% da PM atualizada</p>
+           <p class="tag warn" style="margin-top:8px">⚠️ Resgate antecipado pode sofrer penalidade — verifique a tabela de resgate na apólice</p>`},
+          {type:'block', icon:'🏠', title:'Capitalização como Garantia de Aluguel',
+           text:`<p>O título de capitalização pode substituir o <strong>fiador</strong> em contratos de aluguel. Membros envolvidos:</p>
+           <ul>
+           <li><strong>Locatário (subscritor):</strong> quem paga o título</li>
+           <li><strong>Locador (beneficiário):</strong> proprietário do imóvel, que aciona o título em caso de inadimplência</li>
+           <li><strong>Sociedade de Capitalização:</strong> emissor do título</li></ul>
+           <p class="tag tip" style="margin-top:8px">✅ Vantagem: o locatário recupera o saldo ao fim do contrato, diferente do fiador</p>`},
+        ]},
+    ]
+  },
+  {
+    name:'Vida e Previdência', color:'var(--d2)',
+    mods:[
+      {
+        id:'d1m0', icon:'🛡️', name:'Seguros de Pessoas',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'👥', title:'Sujeitos da Operação',
+           text:`<table class="comp-table"><tr><th>Sujeito</th><th>Papel</th></tr>
+           <tr><td>Segurado</td><td>Pessoa cujo risco é coberto</td></tr>
+           <tr><td>Seguradora</td><td>Assume o risco — é S.A.</td></tr>
+           <tr><td>Estipulante-Instituidor</td><td>Contrata e paga total/parcial do prêmio</td></tr>
+           <tr><td>Estipulante-Averbador</td><td>Contrata mas NÃO paga o prêmio</td></tr>
+           <tr><td>Beneficiário</td><td>Recebe a indenização/capital</td></tr>
+           <tr><td>Corretor</td><td>Intermediário habilitado</td></tr></table>
+           <p class="tag alert" style="margin-top:10px">🚨 Corretoras de seguros NÃO podem ser estipulantes (exceto para seus próprios funcionários)</p>`},
+          {type:'block', icon:'⏱️', title:'Carência e Coberturas de Risco',
+           text:`<p><strong>Carência</strong> = período após o início do contrato em que algumas coberturas ainda não estão ativas.</p>
+           <table class="comp-table" style="margin-top:8px"><tr><th>Cobertura</th><th>Carência típica</th></tr>
+           <tr><td>Morte acidental</td><td>Sem carência</td></tr>
+           <tr><td>Morte natural</td><td>Até 2 anos (se for suicídio)</td></tr>
+           <tr><td>Doenças graves</td><td>Varia por produto</td></tr>
+           <tr><td>Invalidez acidental</td><td>Sem carência</td></tr>
+           <tr><td>Doença (ILTD)</td><td>Período de carência previsto na apólice</td></tr></table>
+           <p class="tag info" style="margin-top:8px">💡 Acidente = sempre sem carência. Doença = há carência!</p>`},
+          {type:'block', icon:'🚫', title:'Riscos Excluídos — Principais',
+           text:`<ul>
+           <li>Atos ilícitos dolosos do segurado ou beneficiário</li>
+           <li>Suicídio durante os primeiros 2 anos de vigência</li>
+           <li>Guerra declarada ou guerra civil</li>
+           <li>Participação em competições de velocidade</li>
+           <li>Uso de álcool/drogas (salvo se não influenciou o sinistro)</li></ul>
+           <p class="tag warn" style="margin-top:8px">⚠️ Após 2 anos: suicídio é coberto mesmo se intencional!</p>`},
+          {type:'block', icon:'💊', title:'Tipos de Coberturas',
+           text:`<ul>
+           <li><strong>Morte (PM e PA):</strong> por morte natural ou acidental</li>
+           <li><strong>IPA:</strong> Invalidez Permanente por Acidente</li>
+           <li><strong>ILTD:</strong> Invalidez Laborativa permanente Total por Doença</li>
+           <li><strong>Doenças Graves:</strong> câncer, infarto, AVC etc.</li>
+           <li><strong>DMHO:</strong> Diárias por Incapacidade Temporária (DIT)</li>
+           <li><strong>Prestamista:</strong> quita dívida em caso de sinistro</li>
+           <li><strong>Educacional:</strong> garante educação dos filhos</li></ul>`},
+        ]},
+      {
+        id:'d1m1', icon:'🏦', name:'Previdência Complementar',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'🔑', title:'VGBL vs PGBL — Diferença CRUCIAL',
+           text:`<table class="comp-table"><tr><th>Aspecto</th><th>VGBL</th><th>PGBL</th></tr>
+           <tr><td>Natureza</td><td style="color:var(--d1)">Seguro de Pessoas (SUSEP)</td><td>Plano Previdenciário</td></tr>
+           <tr><td>IR deduções</td><td>Não deduz</td><td>Deduz até 12% da renda</td></tr>
+           <tr><td>Tributação</td><td>IR só sobre rendimentos</td><td>IR sobre o total resgatado</td></tr>
+           <tr><td>Para quem</td><td>Declaração simples / isento</td><td>Declaração completa</td></tr>
+           <tr><td>Regulação</td><td>SUSEP (é seguro!)</td><td>SUSEP (via EAPC)</td></tr></table>
+           <p class="tag alert" style="margin-top:10px">🚨 VGBL = seguro de pessoas! Aparece na prova da SUSEP por isso, não por ser previdência</p>`},
+          {type:'block', icon:'🏛️', title:'Tipos de Entidades',
+           text:`<table class="comp-table"><tr><th></th><th>EAPC</th><th>EFPC</th></tr>
+           <tr><td>Nome popular</td><td>Previdência aberta</td><td>Fundo de pensão</td></tr>
+           <tr><td>Acesso</td><td>Qualquer pessoa</td><td>Só para vinculados à empresa</td></tr>
+           <tr><td>Fiscalização</td><td>SUSEP</td><td>PREVIC</td></tr>
+           <tr><td>Tipo</td><td>S.A. com fins lucrativos</td><td>Sem fins lucrativos</td></tr>
+           <tr><td>Investimentos</td><td>Via FIE (Fundo Especialmente Constituído)</td><td>Via EFPC diretamente</td></tr></table>`},
+          {type:'block', icon:'📊', title:'Modalidades e Tributação',
+           text:`<p><strong>Benefício Definido:</strong> o valor do benefício é fixado na proposta. Coberturas de morte/invalidez são sempre assim.</p>
+           <p style="margin-top:8px"><strong>Contribuição Variável:</strong> o benefício depende do saldo acumulado. Só para cobertura por sobrevivência.</p>
+           <p style="margin-top:8px"><strong>Tabela Progressiva:</strong> 7,5% a 27,5% — como IR normal</p>
+           <p><strong>Tabela Regressiva:</strong> começa em 35% e cai até 10% após 10 anos. Incentiva acúmulo de longo prazo.</p>
+           <p class="tag tip" style="margin-top:8px">✅ Prazo ≥ 10 anos + Tabela Regressiva = tributação mais barata (10%)</p>`},
+          {type:'block', icon:'🔄', title:'Portabilidade e Resgate',
+           text:`<ul>
+           <li><strong>Portabilidade:</strong> migrar recursos entre planos sem tributação imediata — entre VGBL/VGBL ou PGBL/PGBL</li>
+           <li><strong>Resgate:</strong> retirar os recursos da Provisão Matemática — sujeito a IR</li>
+           <li><strong>Taxa de Carregamento:</strong> 0% a 10% (contribuição variável) ou até 30% (benefício definido)</li>
+           <li><strong>Taxa de administração:</strong> anual, cobrada sobre o patrimônio do fundo</li></ul>
+           <p class="tag warn" style="margin-top:8px">⚠️ Portabilidade PGBL → VGBL é PROIBIDA (diferentes tributações)</p>`},
+        ]},
+      {
+        id:'d1m2', icon:'⚠️', name:'Gerenciamento de Riscos',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'🎯', title:'Gestão de Riscos no Seguro',
+           text:`<p>O gerenciamento de riscos envolve <strong>identificar, avaliar e controlar</strong> exposições a perdas.</p>
+           <ul>
+           <li><strong>Evitar o risco:</strong> não praticar a atividade perigosa</li>
+           <li><strong>Reduzir o risco:</strong> medidas preventivas</li>
+           <li><strong>Reter o risco:</strong> assumir financeiramente</li>
+           <li><strong>Transferir o risco:</strong> contratar seguro — principal ferramenta!</li></ul>
+           <p class="tag tip" style="margin-top:8px">✅ Seguro = transferência contratual do risco para a seguradora</p>`},
+          {type:'block', icon:'👤', title:'Perfil do Investidor/Segurado',
+           text:`<table class="comp-table"><tr><th>Perfil</th><th>Característica</th></tr>
+           <tr><td>Conservador</td><td>Prioriza segurança e liquidez; aceita retorno menor</td></tr>
+           <tr><td>Moderado</td><td>Aceita pouco risco por maior retorno</td></tr>
+           <tr><td>Arrojado/Agressivo</td><td>Aceita risco significativo por maior retorno potencial</td></tr></table>
+           <p class="tag info" style="margin-top:8px">📌 Suitability: o produto deve ser adequado ao perfil do cliente!</p>`},
+          {type:'block', icon:'🌊', title:'Tipos de Risco',
+           text:`<ul>
+           <li><strong>Risco de crédito:</strong> calote — contraparte não paga</li>
+           <li><strong>Risco de mercado:</strong> variação de preços, juros, câmbio</li>
+           <li><strong>Risco de liquidez:</strong> dificuldade de converter ativo em caixa</li>
+           <li><strong>Risco operacional:</strong> falhas em processos, sistemas, pessoas</li>
+           <li><strong>Risco legal:</strong> contratos não executáveis ou regulação desfavorável</li></ul>`},
+        ]},
+      {
+        id:'d1m3', icon:'🏥', name:'Saúde Suplementar',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'🏛️', title:'Sistema de Saúde Suplementar',
+           text:`<table class="comp-table"><tr><th>Órgão</th><th>Função</th></tr>
+           <tr><td>MS (Ministério da Saúde)</td><td>Política nacional de saúde</td></tr>
+           <tr><td>CONSU</td><td>Diretivas gerais da saúde suplementar</td></tr>
+           <tr><td>ANS</td><td>Autarquia — regula e fiscaliza operadoras</td></tr>
+           <tr><td>CAMSS</td><td>Câmara consultiva da ANS</td></tr></table>
+           <p class="tag alert" style="margin-top:10px">🚨 Saúde Suplementar NÃO pertence ao SNSP — é vinculada ao Ministério da Saúde, não ao da Fazenda!</p>`},
+          {type:'block', icon:'🏢', title:'Operadoras de Planos de Saúde',
+           text:`<ul>
+           <li>Medicinas de grupo</li>
+           <li>Seguradoras especializadas em saúde</li>
+           <li>Cooperativas médicas (ex: Unimed)</li>
+           <li>Filantropias</li>
+           <li>Autogestões (empresas para funcionários)</li>
+           <li>Odontologias de grupo / Cooperativas odontológicas</li>
+           <li>Administradoras de benefícios</li></ul>`},
+          {type:'block', icon:'📋', title:'Coberturas e Carências — ANS',
+           text:`<ul>
+           <li><strong>Carência urgência/emergência:</strong> máximo 24 horas</li>
+           <li><strong>Carência partos:</strong> 300 dias (10 meses)</li>
+           <li><strong>Carência outros casos:</strong> máximo 180 dias (6 meses)</li>
+           <li><strong>Doenças preexistentes:</strong> podem ter carência de até 24 meses</li></ul>
+           <p class="tag warn" style="margin-top:8px">⚠️ Plano não pode negar cobertura de urgência/emergência — máximo 24h de carência!</p>`},
+        ]},
+      {
+        id:'d1m4', icon:'💼', name:'Operações de Seguros',
+        sub:'5 questões na prova',
+        content:[
+          {type:'block', icon:'🔁', title:'Resseguro e Retrocessão',
+           text:`<p><strong>Resseguro:</strong> a seguradora transfere parte do risco para um ressegurador. "Seguro do seguro".</p>
+           <p style="margin-top:8px"><strong>Retrocessão:</strong> ressegurador transfere parte do risco para outro ressegurador.</p>
+           <ul style="margin-top:8px">
+           <li><strong>Ressegurador Local:</strong> sediado no Brasil com sede exclusiva para resseguro</li>
+           <li><strong>Ressegurador Admitido:</strong> estrangeiro com escritório no Brasil</li>
+           <li><strong>Ressegurador Eventual:</strong> estrangeiro sem presença no Brasil — sujeito a limites</li></ul>`},
+          {type:'block', icon:'📑', title:'Sinistro — Processo',
+           text:`<ol style="padding-left:16px;display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text2)">
+           <li><strong style="color:var(--text)">Aviso de sinistro:</strong> segurado comunica à seguradora imediatamente</li>
+           <li><strong style="color:var(--text)">Abertura do processo:</strong> seguradora registra e designa regulador</li>
+           <li><strong style="color:var(--text)">Regulação:</strong> apura causas, circunstâncias e valor do dano</li>
+           <li><strong style="color:var(--text)">Liquidação:</strong> cálculo da indenização devida</li>
+           <li><strong style="color:var(--text)">Pagamento:</strong> quitação ao segurado ou beneficiário</li></ol>
+           <p class="tag info" style="margin-top:10px">📌 Prazo de pagamento: 30 dias após recebimento da documentação completa</p>`},
+        ]},
+    ]
+  },
+  {
+    name:'Demais Ramos (a)', color:'var(--d3)',
+    mods:[
+      {
+        id:'d2m0', icon:'🏚️', name:'Introdução ao Seguro de Danos',
+        sub:'5 questões na prova',
+        content:[
+          {type:'block', icon:'📋', title:'Seguro de Danos — Características',
+           text:`<p>O seguro de danos cobre <strong>perdas materiais</strong>. Princípio fundamental: <strong>indenização não pode gerar lucro</strong> ao segurado — o objetivo é restaurar a situação anterior ao sinistro.</p>
+           <ul style="margin-top:8px">
+           <li><strong>Sobre-seguro:</strong> importância segurada > valor do bem — proibido, indeniza apenas o valor do bem</li>
+           <li><strong>Sub-seguro:</strong> importância segurada < valor do bem — rateio proporcional na indenização</li>
+           <li><strong>Co-seguro:</strong> dois ou more seguradoras dividem o mesmo risco</li>
+           <li><strong>Franquia:</strong> valor mínimo a cargo do segurado — reduz o prêmio</li></ul>`},
+          {type:'block', icon:'💰', title:'Tipos de Prêmio',
+           text:`<ul>
+           <li><strong>Prêmio Puro:</strong> cobre apenas o risco esperado (estatística)</li>
+           <li><strong>Prêmio Comercial:</strong> prêmio puro + carregamento (despesas + lucro)</li>
+           <li><strong>Prêmio Total:</strong> prêmio comercial + IOF</li>
+           <li><strong>Prêmio Ganho:</strong> parcela relativa ao período já decorrido sem sinistro</li>
+           <li><strong>Prêmio a Ganhar:</strong> parcela relativa ao período futuro de vigência</li></ul>`},
+          {type:'block', icon:'⚖️', title:'Grandes Riscos',
+           text:`<p>Riscos que, pela sua magnitude, exigem tratamento especial:</p>
+           <ul>
+           <li>Patrimônio líquido > R$ 100 milhões ou</li>
+           <li>Prêmio total > R$ 200 mil por ano</li></ul>
+           <p style="margin-top:8px">Para Grandes Riscos: as condições contratuais podem ser <strong>livremente negociadas</strong> entre segurado e seguradora, com menos restrições regulatórias.</p>`},
+        ]},
+      {
+        id:'d2m1', icon:'🏘️', name:'Seguros Compreensivos',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'🏠', title:'Tipos de Seguros Compreensivos',
+           text:`<p>Apólice única que agrupa múltiplas coberturas. <strong>Sempre exige</strong> cobertura básica + pelo menos 1 cobertura adicional.</p>
+           <table class="comp-table" style="margin-top:8px"><tr><th>Tipo</th><th>Para quem</th></tr>
+           <tr><td>Residencial</td><td>Casas e apartamentos (habituais e de veraneio)</td></tr>
+           <tr><td>Condominial</td><td>Residencial, comercial, escritórios, flats, shoppings</td></tr>
+           <tr><td>Empresarial</td><td>Comércio, serviços, indústria</td></tr></table>`},
+          {type:'block', icon:'🛡️', title:'Coberturas Principais',
+           text:`<ul>
+           <li><strong>Incêndio (cobertura básica obrigatória):</strong> fogo, fumaça, calor</li>
+           <li><strong>Roubo e Furto:</strong> cobertura adicional</li>
+           <li><strong>Danos Elétricos:</strong> equipamentos elétricos e eletrônicos</li>
+           <li><strong>Desastres Naturais:</strong> enchentes, tempestades, terremotos</li>
+           <li><strong>Responsabilidade Civil:</strong> danos causados a terceiros</li>
+           <li><strong>Quebra de Vidros:</strong> portas, janelas, espelhos</li></ul>
+           <p class="tag info" style="margin-top:8px">📌 Assistência 24h: NÃO pode ser prestada diretamente pela seguradora (terceirizada)</p>`},
+          {type:'block', icon:'📊', title:'LMI e LMG',
+           text:`<p><strong>LMI — Limite Máximo de Indenização:</strong> valor máximo pago por cobertura específica.</p>
+           <p style="margin-top:8px"><strong>LMG — Limite Máximo Global:</strong> teto total da apólice, independente do número de coberturas.</p>
+           <p class="tag warn" style="margin-top:8px">⚠️ Para receber indenização: dano deve ocorrer no endereço segurado e ser coberto pela apólice</p>`},
+        ]},
+      {
+        id:'d2m2', icon:'📉', name:'Lucros Cessantes',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'💡', title:'O que são Lucros Cessantes?',
+           text:`<p>Cobre a <strong>perda de receita</strong> que o segurado deixa de receber em consequência de um sinistro que interrompe ou reduz suas atividades. Sempre é uma cobertura <strong>complementar a outro seguro de danos</strong> (ex: incêndio).</p>
+           <ul style="margin-top:8px">
+           <li><strong>Período de Indenização (PI):</strong> tempo máximo de cobertura após o sinistro</li>
+           <li><strong>Prazo de Franquia:</strong> número de dias iniciais não cobertos</li>
+           <li><strong>Lucro Bruto:</strong> base de cálculo para indenização</li></ul>`},
+          {type:'block', icon:'📋', title:'Coberturas Adicionais',
+           text:`<ul>
+           <li><strong>Despesas Fixas:</strong> custos que continuam mesmo sem receita (aluguel, salários)</li>
+           <li><strong>Honorários de Peritos:</strong> profissionais contratados para calcular o prejuízo</li>
+           <li><strong>Despesas Extraordinárias:</strong> gastos adicionais para minimizar a perda</li>
+           <li><strong>Remuneração dos Sócios:</strong> pró-labore dos sócios-dirigentes</li></ul>
+           <p class="tag alert" style="margin-top:8px">🚨 Lucros Cessantes é sempre complementar — exige sinistro em seguro de danos principal!</p>`},
+        ]},
+      {
+        id:'d2m3', icon:'🚛', name:'Seguros de Transportes',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'🗺️', title:'Modalidades de Transporte',
+           text:`<table class="comp-table"><tr><th>Modalidade</th><th>Descrição</th></tr>
+           <tr><td>Nacional</td><td>Carga circula dentro do Brasil</td></tr>
+           <tr><td>Internacional</td><td>Carga cruza fronteiras</td></tr>
+           <tr><td>Importação</td><td>Coberta no Brasil</td></tr>
+           <tr><td>Exportação</td><td>Contratada no exterior ou no Brasil</td></tr></table>`},
+          {type:'block', icon:'🛡️', title:'Coberturas Básicas',
+           text:`<ul>
+           <li><strong>Cobertura A (All Risks):</strong> cobre todos os riscos, exceto os excluídos — mais abrangente</li>
+           <li><strong>Cobertura B:</strong> riscos específicos elencados + incêndio/explosão</li>
+           <li><strong>Cobertura C:</strong> só incêndio, raio, encalhe, naufrágio, colisão — mais restrita</li></ul>
+           <p class="tag tip" style="margin-top:8px">✅ Memorize: A > B > C em abrangência</p>`},
+          {type:'block', icon:'🚚', title:'RCTR-C (Seguro Obrigatório)',
+           text:`<p>Responsabilidade Civil do Transportador Rodoviário de Cargas. É <strong>obrigatório</strong> para transportadoras.</p>
+           <ul style="margin-top:8px">
+           <li>Cobre danos à carga de terceiros durante o transporte</li>
+           <li>O transportador é responsável pela carga do ponto de coleta até a entrega</li>
+           <li><strong>RCF-DC:</strong> Responsabilidade Civil Facultativa por Desaparecimento de Carga (opcional)</li></ul>`},
+        ]},
+      {
+        id:'d2m4', icon:'🌾', name:'Seguros Rurais e Equipamentos',
+        sub:'5+5 questões na prova',
+        content:[
+          {type:'block', icon:'🌱', title:'Seguro Rural',
+           text:`<p>Protege o produtor rural contra perdas causadas por fenômenos climáticos e outros riscos. O governo subsidia o prêmio via <strong>PSR (Programa de Subvenção ao Prêmio do Seguro Rural)</strong>.</p>
+           <ul style="margin-top:8px">
+           <li><strong>Agrícola:</strong> lavouras — granizo, chuva excessiva, geada, seca</li>
+           <li><strong>Pecuário:</strong> animais (gado, aves, suínos)</li>
+           <li><strong>Aquícola:</strong> organismos aquáticos (piscicultura)</li>
+           <li><strong>Florestal:</strong> florestas plantadas</li>
+           <li><strong>Benfeitorias Rurais:</strong> instalações da propriedade</li></ul>`},
+          {type:'block', icon:'🚜', title:'Seguros de Equipamentos',
+           text:`<ul>
+           <li><strong>Seguro de Equipamentos (Breakdown):</strong> cobre danos a máquinas por defeito elétrico, mecânico, erro de operação</li>
+           <li><strong>Seguro de Equipamentos Eletrônicos:</strong> computadores, servidores, equipamentos de escritório</li>
+           <li><strong>Seguro de Equipamentos em Geral (EEG):</strong> equipamentos portáteis, câmeras, instrumentos</li></ul>
+           <p class="tag info" style="margin-top:8px">📌 Cobre danos acidentais — desgaste normal NÃO é coberto!</p>`},
+        ]},
+    ]
+  },
+  {
+    name:'Demais Ramos (b)', color:'var(--d4)',
+    mods:[
+      {
+        id:'d3m0', icon:'⚖️', name:'Responsabilidade Civil',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'📜', title:'Conceito e Fundamentos Jurídicos',
+           text:`<p>Responsabilidade Civil é a obrigação de reparar dano causado a terceiros. Pode ser:</p>
+           <ul>
+           <li><strong>Contratual:</strong> originada de descumprimento de contrato</li>
+           <li><strong>Extracontratual (Aquiliana):</strong> originada de ato ilícito sem contrato</li>
+           <li><strong>Objetiva:</strong> não precisa provar culpa — o risco da atividade já basta</li>
+           <li><strong>Subjetiva:</strong> precisa provar dolo ou culpa (negligência, imprudência, imperícia)</li></ul>
+           <p class="tag info" style="margin-top:8px">📌 Seguro de RC cobre: danos materiais, corporais e morais causados a terceiros</p>`},
+          {type:'block', icon:'🏢', title:'Modalidades de RC',
+           text:`<ul>
+           <li><strong>RC Geral:</strong> atividades empresariais em geral</li>
+           <li><strong>RC Profissional:</strong> médicos, advogados, engenheiros, corretores</li>
+           <li><strong>RC do Empregador:</strong> acidentes de trabalho de funcionários</li>
+           <li><strong>RC Ambiental (Poluição):</strong> danos ao meio ambiente</li>
+           <li><strong>D&O (Diretores e Executivos):</strong> decisões tomadas na gestão da empresa</li></ul>
+           <p class="tag warn" style="margin-top:8px">⚠️ RC Profissional de Corretor: cobre erros e omissões nas orientações ao cliente</p>`},
+          {type:'block', icon:'🌿', title:'Riscos Ambientais',
+           text:`<p>O seguro de riscos ambientais cobre a responsabilidade do segurado por danos ao meio ambiente causados por <strong>poluição acidental</strong>.</p>
+           <ul style="margin-top:8px">
+           <li>Inclui: vazamentos, derramamentos, emissão de gases tóxicos</li>
+           <li><strong>Excluído:</strong> poluição gradual e intencional</li>
+           <li>O sinistro deve ser <strong>súbito e acidental</strong></li></ul>`},
+        ]},
+      {
+        id:'d3m1', icon:'🚗', name:'Seguros de Automóveis',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'🛡️', title:'Coberturas do Seguro Auto',
+           text:`<table class="comp-table"><tr><th>Cobertura</th><th>O que cobre</th></tr>
+           <tr><td>Casco (Colisão)</td><td>Danos ao próprio veículo — colisão, capotamento, tombamento</td></tr>
+           <tr><td>Casco Compreensivo</td><td>Colisão + incêndio + roubo + furto + fenômenos naturais</td></tr>
+           <tr><td>RCF-V (Danos Materiais)</td><td>Danos materiais causados a terceiros</td></tr>
+           <tr><td>RCF-V (Danos Corporais)</td><td>Lesões corporais causadas a terceiros</td></tr>
+           <tr><td>APP (Passageiros)</td><td>Acidentes com ocupantes do veículo</td></tr>
+           <tr><td>DPVAT</td><td>Obrigatório — danos corporais a pessoas em vias públicas</td></tr></table>`},
+          {type:'block', icon:'📊', title:'Variáveis do Prêmio',
+           text:`<ul>
+           <li><strong>Tipo e modelo do veículo:</strong> tabela FIPE como referência</li>
+           <li><strong>Perfil do condutor principal:</strong> idade, sexo, CEP</li>
+           <li><strong>Utilização:</strong> particular, comercial, táxi</li>
+           <li><strong>Franquia:</strong> valor assumido pelo segurado — reduz prêmio</li>
+           <li><strong>Histórico de sinistros (bônus):</strong> desconto para quem não aciona o seguro</li></ul>
+           <p class="tag info" style="margin-top:8px">📌 Valor de referência: tabela FIPE — avaliação do veículo na data do sinistro</p>`},
+          {type:'block', icon:'🚨', title:'DPVAT — Seguro Obrigatório',
+           text:`<p>Cobre <strong>danos corporais</strong> a pedestres, ciclistas e ocupantes de qualquer veículo em vias terrestres — independente de culpa.</p>
+           <ul style="margin-top:8px">
+           <li>Morte: indenização fixa</li>
+           <li>Invalidez permanente: proporcional ao grau</li>
+           <li>Despesas médicas: reembolso até limite</li></ul>
+           <p class="tag alert" style="margin-top:8px">🚨 DPVAT é pago por TODOS os veículos — mesmo sem sinistro. É obrigatório por lei!</p>`},
+        ]},
+      {
+        id:'d3m2', icon:'🔧', name:'Riscos de Engenharia',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'🏗️', title:'Seguros de Riscos de Engenharia',
+           text:`<p>Cobrem riscos de obras e equipamentos em construção, montagem e operação.</p>
+           <table class="comp-table" style="margin-top:8px"><tr><th>Modalidade</th><th>O que cobre</th></tr>
+           <tr><td>OCC (Obras Civis em Construção)</td><td>Danos durante construção civil</td></tr>
+           <tr><td>IM (Instalação e Montagem)</td><td>Equipamentos em montagem/instalação</td></tr>
+           <tr><td>ERF (Equipamentos e Máquinas)</td><td>Equipamentos em operação</td></tr>
+           <tr><td>RC de Obras</td><td>Danos a terceiros durante obras</td></tr></table>`},
+          {type:'block', icon:'🔍', title:'Coberturas Adicionais',
+           text:`<ul>
+           <li><strong>Lucros Cessantes:</strong> perda de receita por atraso na obra</li>
+           <li><strong>RC Cruzada:</strong> danos entre subcontratados na mesma obra</li>
+           <li><strong>Manutenção Simples:</strong> cobertura do período de garantia pós-obra</li>
+           <li><strong>Retirada de Destroços:</strong> custos de demolição e limpeza</li>
+           <li><strong>Erro de Projeto:</strong> cobertura opcional para falha de engenharia</li></ul>`},
+        ]},
+      {
+        id:'d3m3', icon:'🏢', name:'Gestão de Corretora',
+        sub:'10 questões na prova',
+        content:[
+          {type:'block', icon:'📊', title:'Operação de uma Corretora',
+           text:`<p>A corretora de seguros é uma <strong>PF ou PJ habilitada pela SUSEP</strong> para intermediar seguros.</p>
+           <ul style="margin-top:8px">
+           <li><strong>Receita principal:</strong> comissão de corretagem (% do prêmio)</li>
+           <li><strong>Comissão máxima:</strong> regulada por produto e ramo</li>
+           <li><strong>Cadastro na SUSEP:</strong> obrigatório para exercer a atividade</li>
+           <li><strong>RC Profissional:</strong> recomendável para cobrir erros e omissões</li></ul>`},
+          {type:'block', icon:'💼', title:'Gestão Empresarial',
+           text:`<ul>
+           <li><strong>Gestão Administrativa:</strong> processos, documentos, contratos</li>
+           <li><strong>Gestão de Pessoas:</strong> recrutamento, treinamento, metas</li>
+           <li><strong>Gestão Financeira:</strong> fluxo de caixa, DRE, contas a pagar/receber</li>
+           <li><strong>Gestão Comercial:</strong> carteira de clientes, prospecção, renovações</li>
+           <li><strong>Gestão Operacional:</strong> sinistros, emissões, endossos</li></ul>
+           <p class="tag tip" style="margin-top:8px">✅ Business Model Canvas: ferramenta de planejamento estratégico para corretoras</p>`},
+          {type:'block', icon:'🎯', title:'Seguro Garantia e Fiança Locatícia',
+           text:`<p><strong>Seguro Garantia:</strong> substitui fianças em contratos de obras públicas e privadas. Modalidades:</p>
+           <ul>
+           <li>Garantia de Execução de Obra</li>
+           <li>Garantia de Adiantamento de Pagamento</li>
+           <li>Garantia de Retenção de Pagamento</li>
+           <li>Garantia de Execução Tributária</li></ul>
+           <p style="margin-top:8px"><strong>Fiança Locatícia:</strong> substitui o fiador no aluguel de imóveis residenciais/comerciais.</p>`},
+        ]},
+    ]
+  }
+];
+
+// ═══════════════════════════════════════════════════════════
+// FLASHCARDS DATA
+// ═══════════════════════════════════════════════════════════
+const CARDS = [
+  // DIA 1
+  {d:0,q:'O que é Prêmio no contexto do seguro?',a:'É o preço do seguro — valor pago pelo segurado à seguradora para obter a cobertura. Pode ser pago à vista ou em parcelas. A falta de pagamento cancela o contrato automaticamente.',col:'var(--d1)'},
+  {d:0,q:'Qual a diferença entre CNSP e SUSEP?',a:'CNSP = normatiza (fixa diretrizes e normas). SUSEP = fiscaliza (executa a política do CNSP). O CNSP é o órgão superior; a SUSEP é o executor.',col:'var(--d1)'},
+  {d:0,q:'A Capitalização integra o SNSP?',a:'NÃO! O Sistema Nacional de Capitalização é separado do SNSP. Porém, ambos são fiscalizados pela SUSEP e normatizados pelo CNSP.',col:'var(--d1)'},
+  {d:0,q:'Quais são as 6 modalidades de título de capitalização?',a:'1) Tradicional 2) Instrumento de Garantia 3) Compra Programada 4) Popular 5) Incentivo 6) Filantropia Premiável',col:'var(--d1)'},
+  {d:0,q:'Qual modalidade de capitalização tem quota de sorteio mínima obrigatória de 5%?',a:'Modalidade POPULAR — é o único com limite mínimo obrigatório de quota de sorteio (≥5%).',col:'var(--d1)'},
+  {d:0,q:'O que são as 3 quotas de um título de capitalização?',a:'1) Quota de Capitalização: vai para poupança (Provisão Matemática) 2) Quota de Sorteio: financia os prêmios de sorteio 3) Quota de Carregamento: cobre despesas operacionais',col:'var(--d1)'},
+  {d:0,q:'Na capitalização composta: M = ?',a:'M = C × (1 + i)ⁿ — onde C=capital inicial, i=taxa de juros, n=número de períodos. Os juros incidem sobre juros anteriores (juros sobre juros).',col:'var(--d1)'},
+  {d:0,q:'O seguro pode gerar lucro para o segurado?',a:'NÃO. O seguro busca restabelecer o equilíbrio econômico anterior ao sinistro — nunca pode ser fonte de enriquecimento. Se a indenização fosse maior que o prejuízo, seria especulação.',col:'var(--d1)'},
+  // DIA 2
+  {d:1,q:'VGBL é seguro ou previdência?',a:'É um SEGURO DE PESSOAS, regulado pela SUSEP. Aparece na prova SUSEP por ser classificado como seguro, não como plano previdenciário — essa é a pegadinha clássica!',col:'var(--d2)'},
+  {d:1,q:'Qual a diferença fiscal entre PGBL e VGBL?',a:'PGBL: deduz até 12% da renda bruta do IR (somente para quem usa declaração completa). VGBL: não deduz, mas o IR incide apenas sobre os rendimentos no resgate, não sobre o total.',col:'var(--d2)'},
+  {d:1,q:'EAPC ou EFPC — qual é o fundo de pensão?',a:'EFPC = Entidade Fechada de Previdência Complementar = Fundo de Pensão. Fechada porque só aceita vinculados a uma empresa. Fiscalizada pela PREVIC (não pela SUSEP!)',col:'var(--d2)'},
+  {d:1,q:'Na tabela regressiva do IR para previdência, qual a alíquota mínima e após quantos anos?',a:'10% após 10 anos ou mais de acumulação. A alíquota começa em 35% (até 2 anos) e decresce a cada 2 anos: 35→30→25→20→15→10.',col:'var(--d2)'},
+  {d:1,q:'Portabilidade PGBL → VGBL: permitida?',a:'PROIBIDA! Só é permitida portabilidade entre produtos de mesma natureza: PGBL→PGBL ou VGBL→VGBL. A mudança entre tipos alteraria a tributação.',col:'var(--d2)'},
+  {d:1,q:'Qual o prazo máximo de carência para urgência em plano de saúde?',a:'24 horas! A ANS determina que planos de saúde não podem ter carência superior a 24h para casos de urgência e emergência.',col:'var(--d2)'},
+  {d:1,q:'Quem fiscaliza planos de saúde: SUSEP ou ANS?',a:'ANS (Agência Nacional de Saúde Suplementar), vinculada ao Ministério da Saúde. A SUSEP fiscaliza seguros em geral — a saúde suplementar é um sistema separado.',col:'var(--d2)'},
+  {d:1,q:'O que é sub-rogação no seguro?',a:'Após pagar a indenização, a seguradora assume o direito do segurado de cobrar do responsável pelo dano. A seguradora "entra no lugar" do segurado para buscar ressarcimento.',col:'var(--d2)'},
+  // DIA 3
+  {d:2,q:'O que é sub-seguro e o que acontece na indenização?',a:'Sub-seguro: importância segurada menor que o valor real do bem. Na indenização, aplica-se o RATEIO PROPORCIONAL — a seguradora paga apenas na proporção entre o valor segurado e o valor real.',col:'var(--d3)'},
+  {d:2,q:'Coberturas A, B, C no seguro de transportes: qual é mais abrangente?',a:'A > B > C. Cobertura A = All Risks (todos os riscos, exceto exclusões). B = riscos específicos + incêndio. C = só incêndio, raio, naufrágio, colisão.',col:'var(--d3)'},
+  {d:2,q:'RCTR-C: obrigatório ou facultativo?',a:'OBRIGATÓRIO. Responsabilidade Civil do Transportador Rodoviário de Cargas. Todo transportador rodoviário profissional de cargas é obrigado a contratar.',col:'var(--d3)'},
+  {d:2,q:'O que é franquia no seguro?',a:'Valor mínimo do prejuízo a cargo do segurado. Abaixo da franquia, a seguradora não paga nada. Acima, a seguradora paga o excedente (franquia dedutível) ou tudo (franquia simples).',col:'var(--d3)'},
+  {d:2,q:'Seguro de Lucros Cessantes é independente ou complementar?',a:'COMPLEMENTAR — sempre depende de um sinistro em outro seguro de danos (ex: incêndio). Não pode ser contratado sozinho.',col:'var(--d3)'},
+  {d:2,q:'O que o seguro compreensivo sempre exige?',a:'A contratação da cobertura básica (normalmente incêndio) MAIS pelo menos uma cobertura adicional. Não existe seguro compreensivo só com a cobertura básica.',col:'var(--d3)'},
+  // DIA 4
+  {d:3,q:'O que é RCF-V no seguro de automóveis?',a:'Responsabilidade Civil Facultativa de Veículos — cobre danos materiais e/ou corporais causados a TERCEIROS durante um acidente. É facultativo (diferente do DPVAT, que é obrigatório).',col:'var(--d4)'},
+  {d:3,q:'O DPVAT cobre danos ao próprio veículo?',a:'NÃO! DPVAT cobre SOMENTE danos CORPORAIS a pessoas (pedestres, ciclistas, ocupantes). Danos ao veículo são cobertos pelo casco/colisão, que é facultativo.',col:'var(--d4)'},
+  {d:3,q:'O que é seguro D&O?',a:'Directors and Officers — Responsabilidade Civil para diretores e executivos. Cobre danos causados a terceiros (acionistas, credores) por decisões tomadas na gestão da empresa.',col:'var(--d4)'},
+  {d:3,q:'RC Objetiva vs RC Subjetiva: qual precisa provar culpa?',a:'Subjetiva: PRECISA provar dolo ou culpa (negligência, imprudência, imperícia). Objetiva: NÃO precisa provar culpa — o risco da atividade já gera responsabilidade automaticamente.',col:'var(--d4)'},
+  {d:3,q:'Venda casada é permitida?',a:'PROIBIDA pelo CDC e SUSEP. Não se pode condicionar a venda de um produto à compra de outro. Porém, é PERMITIDO oferecer descontos/benefícios por pacote de produtos, desde que seja opcional.',col:'var(--d4)'},
+  {d:3,q:'O que é seguro garantia?',a:'Substitui fianças e caucões em contratos (obra, licitação, locação). O segurado é o contratante (devedor da obrigação), e o beneficiário é quem recebe a garantia em caso de inadimplemento.',col:'var(--d4)'},
+];
+
+// ═══════════════════════════════════════════════════════════
+// QUIZ DATA
+// ═══════════════════════════════════════════════════════════
+const QUIZ = [
+  // DIA 1
+  {d:0,q:'O Sistema Nacional de Seguros Privados (SNSP) é composto por quais órgãos?',opts:['CNSP, SUSEP, resseguradores, seguradoras e corretores','CNSP, SUSEP, ANS e BACEN','SUSEP, PREVIC, CVM e BACEN','CNSP, SUSEP, operadoras e administradoras'],ans:0,exp:'O SNSP foi instituído pelo Decreto-Lei nº 73/1966 e é composto por: CNSP (normatiza), SUSEP (fiscaliza), resseguradores, seguradoras e corretores habilitados.'},
+  {d:0,q:'Em relação ao seguro, qual afirmação está CORRETA?',opts:['O seguro pode gerar lucro ao segurado em caso de sinistro','O seguro é a transferência de risco do segurado para a seguradora','A saúde suplementar faz parte do SNSP','A SUSEP normatiza e o CNSP fiscaliza'],ans:1,exp:'O seguro é a transferência contratual do risco. O segurado não pode lucrar — apenas ser indenizado pelo prejuízo. A SUSEP fiscaliza (executa) e o CNSP normatiza.'},
+  {d:0,q:'Qual modalidade de título de capitalização possui quota de sorteio mínima obrigatória de 5%?',opts:['Tradicional','Instrumento de Garantia','Popular','Incentivo'],ans:2,exp:'A modalidade Popular é a única que possui limite mínimo obrigatório para a quota de sorteio (≥5% da contribuição). As demais não possuem esse limite mínimo.'},
+  {d:0,q:'O título de capitalização é regulado como:',opts:['Seguro de pessoas','Previdência complementar','Produto financeiro, mas NÃO é um seguro','Fundo de investimento'],ans:2,exp:'Capitalização NÃO é seguro, mas é fiscalizada pela SUSEP e normatizada pelo CNSP. É um produto financeiro que combina poupança programada com a possibilidade de sorteios.'},
+  {d:0,q:'Na capitalização composta, os juros são calculados sobre:',opts:['Apenas o capital inicial','O capital inicial acrescido dos juros acumulados','O montante menos as taxas','A média entre capital inicial e montante final'],ans:1,exp:'Na capitalização composta, os juros de cada período incidem sobre o capital inicial MAIS os juros já acumulados (juros sobre juros). Daí o crescimento exponencial.'},
+  // DIA 2
+  {d:1,q:'Por que o VGBL aparece na prova da SUSEP?',opts:['Porque é um produto de previdência privada','Porque é classificado como seguro de pessoas pela SUSEP','Porque tem taxa de carregamento de até 30%','Porque é fiscalizado pela PREVIC'],ans:1,exp:'O VGBL é classificado como SEGURO DE PESSOAS pela SUSEP, não como plano previdenciário. Por isso é regulado e fiscalizado pela SUSEP e aparece na prova de habilitação para corretor de seguros.'},
+  {d:1,q:'João usa a declaração completa do IR e quer deduzir as contribuições. Qual produto é mais indicado?',opts:['VGBL','PGBL','CDB','Tesouro Direto'],ans:1,exp:'O PGBL permite dedução de até 12% da renda bruta no IR para quem usa a declaração completa. O VGBL não permite dedução, sendo mais indicado para quem usa declaração simplificada.'},
+  {d:1,q:'Na tabela regressiva da previdência, qual é a menor alíquota de IR e quando é atingida?',opts:['5% após 8 anos','10% após 10 anos','12% após 10 anos','15% após 8 anos'],ans:1,exp:'A tabela regressiva começa em 35% (até 2 anos) e reduz 5% a cada 2 anos, chegando ao mínimo de 10% após 10 anos de acumulação. Incentiva o investimento de longo prazo.'},
+  {d:1,q:'Qual é o prazo máximo de carência para urgência e emergência em planos de saúde?',opts:['Zero — atendimento imediato','24 horas','7 dias','180 dias'],ans:1,exp:'A ANS determina que a carência máxima para urgência e emergência é de 24 horas. Para partos, é de 300 dias (10 meses). Para demais casos, é de até 180 dias.'},
+  {d:1,q:'Após pagar a indenização ao segurado, a seguradora assume o direito de cobrar do responsável pelo dano. Isso se chama:',opts:['Portabilidade','Sub-rogação','Endosso','Retrocessão'],ans:1,exp:'Sub-rogação: a seguradora "entra no lugar" do segurado para buscar ressarcimento do causador do dano. É prevista no Código Civil e visa evitar que o causador do dano saia impune.'},
+  // DIA 3
+  {d:2,q:'Em um seguro de transportes, a cobertura "All Risks" corresponde a qual cobertura?',opts:['Cobertura A','Cobertura B','Cobertura C','Cobertura D'],ans:0,exp:'Cobertura A = All Risks (todos os riscos, exceto os expressamente excluídos) — é a mais abrangente. B e C são coberturas de riscos nomeados, sendo C a mais restrita das três.'},
+  {d:2,q:'O Seguro de Lucros Cessantes pode ser contratado de forma independente?',opts:['Sim, é um seguro autônomo','Não, é sempre complementar a um seguro de danos','Sim, mas apenas para indústrias','Não, é exclusivo para comércio'],ans:1,exp:'O Seguro de Lucros Cessantes é SEMPRE complementar — depende de um sinistro amparado por outro seguro de danos (ex: incêndio) para ser acionado. Não pode ser contratado isoladamente.'},
+  {d:2,q:'O RCTR-C para transportadores rodoviários é:',opts:['Facultativo para transportadoras com mais de 5 veículos','Obrigatório para todos os transportadores rodoviários de cargas','Opcional conforme contrato com embarcador','Obrigatório apenas para cargas perigosas'],ans:1,exp:'O RCTR-C (Responsabilidade Civil do Transportador Rodoviário de Cargas) é OBRIGATÓRIO para todos os transportadores rodoviários profissionais de cargas, independente do tamanho da frota.'},
+  {d:2,q:'Sobre sub-seguro, qual é a consequência para a indenização?',opts:['A seguradora paga o valor total da perda','Aplica-se o rateio proporcional na indenização','O contrato é cancelado automaticamente','O segurado perde todo o direito à indenização'],ans:1,exp:'No sub-seguro (importância segurada < valor real do bem), aplica-se o rateio proporcional: a seguradora paga apenas na mesma proporção em que o valor segurado representa o valor real do bem.'},
+  // DIA 4
+  {d:3,q:'O DPVAT cobre quais tipos de danos?',opts:['Danos materiais ao veículo do segurado','Apenas danos corporais a terceiros','Danos materiais e corporais a terceiros','Apenas danos ao próprio veículo'],ans:1,exp:'O DPVAT (Danos Pessoais Causados por Veículos Automotores) cobre EXCLUSIVAMENTE danos corporais (morte, invalidez permanente e despesas médicas) a qualquer pessoa em vias terrestres, independente de culpa.'},
+  {d:3,q:'A venda casada em seguros é:',opts:['Permitida se o cliente concordar','Permitida apenas em bancassurance','Proibida pelo CDC e regulação SUSEP','Permitida para produtos complementares'],ans:2,exp:'A venda casada é PROIBIDA pelo Código de Defesa do Consumidor e pela regulação da SUSEP. Condicionar a venda de um produto à compra de outro é ilegal. Pode-se oferecer descontos por pacote, desde que o cliente possa contratar cada produto separadamente.'},
+  {d:3,q:'A Responsabilidade Civil Objetiva difere da Subjetiva pois:',opts:['Exige comprovação de culpa ou dolo','Não exige comprovação de culpa — o risco da atividade basta','Só se aplica a pessoas jurídicas','Cobre apenas danos materiais'],ans:1,exp:'Na RC Objetiva não é necessário provar culpa — a responsabilidade decorre do exercício de atividades de risco (ex: transporte de produtos químicos). Na RC Subjetiva é necessário provar dolo ou culpa (negligência, imprudência, imperícia).'},
+  {d:3,q:'O seguro D&O (Directors & Officers) protege contra:',opts:['Danos ao patrimônio da empresa','Responsabilidade civil de diretores por decisões de gestão','Acidentes de trabalho de funcionários','Riscos ambientais da atividade industrial'],ans:1,exp:'O D&O (Diretores e Executivos) cobre a responsabilidade civil pessoal de diretores, conselheiros e executivos por perdas causadas a terceiros (acionistas, credores, funcionários) em decorrência de decisões de gestão.'},
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let S = {done:{}, cards_know:{}, sessions_today:0, total_mins:0, streak:0, last_date:''};
+let curDia=-1, curMod=-1, curContent=null;
+let cardFilter='all', cardIdx=0, filteredCards=[], cardFlipped=false;
+let knowYesCnt=0, knowNoCnt=0;
+let quizFilter='all', quizQ=[], quizIdx=0, quizCorrect=0, quizWrong=0, quizAnswered=false;
+let tMode='focus', tSecs=1500, tRunning=false, tInterval=null;
+const CIRC=553;
+
+// STORAGE
+function save(){try{localStorage.setItem('susep3',JSON.stringify(S));}catch(e){}}
+function load(){try{const d=localStorage.getItem('susep3');if(d)S=JSON.parse(d);}catch(e){}}
+
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════
+function goScreen(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('scr-'+id).classList.add('on');
+  const btns={home:0,study:1,cards:2,quiz:3,timer:4};
+  document.querySelectorAll('.nb')[btns[id]].classList.add('on');
+  if(id==='home')updateHome();
+  if(id==='cards')initCards();
+}
+
+// ═══════════════════════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════════════════════
+function updateHome(){
+  let totalMods=0, doneMods=0;
+  DIAS.forEach((dia,di)=>{
+    const mods=dia.mods;
+    totalMods+=mods.length;
+    let doneCount=mods.filter(m=>S.done[m.id]).length;
+    doneMods+=doneCount;
+    const pct=Math.round(doneCount/mods.length*100);
+    document.getElementById('pg-d'+di).style.width=pct+'%';
+    document.getElementById('pc-d'+di).textContent=mods.length+' módulos · '+pct+'%';
+  });
+  const overallPct=Math.round(doneMods/totalMods*100);
+  document.getElementById('home-pct').textContent=overallPct+'%';
+  document.getElementById('home-bar').style.width=overallPct+'%';
+  document.getElementById('home-done').textContent=doneMods+' / '+totalMods;
+}
+
+// ═══════════════════════════════════════════════════════════
+// STUDY
+// ═══════════════════════════════════════════════════════════
+function openDia(di){
+  curDia=di;
+  const dia=DIAS[di];
+  document.getElementById('study-dias').style.display='none';
+  document.getElementById('study-mods').style.display='block';
+  document.getElementById('study-content').style.display='none';
+  document.getElementById('mods-title').textContent='Dia '+(di+1)+' — '+dia.name;
+  const list=document.getElementById('mods-list');
+  list.innerHTML='';
+  dia.mods.forEach((mod,mi)=>{
+    const done=S.done[mod.id];
+    const el=document.createElement('div');
+    el.className='mod-item';
+    el.onclick=()=>openMod(di,mi);
+    el.innerHTML=`<div class="mod-icon" style="background:${dia.color}18">${mod.icon}</div>
+    <div class="mod-info">
+      <div class="mod-title">${mod.name}</div>
+      <div class="mod-sub">${mod.sub}</div>
+    </div>
+    <div class="check-ring${done?' done':''}"></div>`;
+    list.appendChild(el);
+  });
+  goScreen('study');
+}
+
+function backToDias(){
+  document.getElementById('study-dias').style.display='block';
+  document.getElementById('study-mods').style.display='none';
+}
+
+function openMod(di,mi){
+  curDia=di; curMod=mi;
+  const mod=DIAS[di].mods[mi];
+  document.getElementById('study-mods').style.display='none';
+  document.getElementById('study-content').style.display='block';
+  document.getElementById('content-title').textContent=mod.name;
+  const body=document.getElementById('content-body');
+  body.innerHTML='';
+  mod.content.forEach(block=>{
+    const el=document.createElement('div');
+    el.className='c-block';
+    el.innerHTML=`<div class="c-block-hdr"><span class="c-block-icon">${block.icon}</span><span class="c-block-title">${block.title}</span></div>
+    <div class="c-block-body">${block.text}</div>`;
+    body.appendChild(el);
+  });
+  const doneBtn=document.getElementById('done-btn');
+  doneBtn.textContent=S.done[mod.id]?'✅ Concluído — toque para desmarcar':'✓ Marcar como concluído';
+  doneBtn.className='done-btn'+(S.done[mod.id]?' marked':'');
+  document.getElementById('ai-msgs').innerHTML='';
+  document.getElementById('ai-input').value='';
+  // Store context for AI
+  window._aiCtx = 'Você é uma professora de preparação para a prova SUSEP (corretor de seguros brasileiro). O aluno está estudando o módulo "'+mod.name+'". Responda SEMPRE em português brasileiro, de forma clara, direta e com exemplos práticos. Foco total no que cai na prova SUSEP. Seja concisa.';
+}
+
+function backToMods(){
+  document.getElementById('study-mods').style.display='block';
+  document.getElementById('study-content').style.display='none';
+}
+
+function toggleDone(){
+  const mod=DIAS[curDia].mods[curMod];
+  S.done[mod.id]=!S.done[mod.id];
+  save();
+  const doneBtn=document.getElementById('done-btn');
+  doneBtn.textContent=S.done[mod.id]?'✅ Concluído — toque para desmarcar':'✓ Marcar como concluído';
+  doneBtn.className='done-btn'+(S.done[mod.id]?' marked':'');
+  updateHome();
+}
+
+// ═══════════════════════════════════════════════════════════
+// AI CHAT
+// ═══════════════════════════════════════════════════════════
+async function sendAI(){
+  const inp=document.getElementById('ai-input');
+  const msg=inp.value.trim();
+  if(!msg)return;
+  inp.value='';
+  const msgs=document.getElementById('ai-msgs');
+  msgs.innerHTML+=`<div class="ai-msg user">${msg}</div>`;
+  msgs.innerHTML+=`<div class="ai-loading" id="ai-loading">Pensando...</div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:400,
+        system:window._aiCtx||'Você é uma professora de preparação para a prova SUSEP. Responda em português brasileiro, de forma clara e objetiva.',
+        messages:[{role:'user',content:msg}]
+      })
+    });
+    const data=await r.json();
+    const reply=data.content?.[0]?.text||'Não consegui obter resposta.';
+    document.getElementById('ai-loading').remove();
+    msgs.innerHTML+=`<div class="ai-msg bot">${reply.replace(/\n/g,'<br>')}</div>`;
+    msgs.scrollTop=msgs.scrollHeight;
+  }catch(e){
+    document.getElementById('ai-loading').remove();
+    msgs.innerHTML+=`<div class="ai-msg bot">Erro ao conectar. Verifique a conexão.</div>`;
+  }
+}
+document.getElementById('ai-input').addEventListener('keydown',e=>{if(e.key==='Enter')sendAI();});
+
+// ═══════════════════════════════════════════════════════════
+// FLASHCARDS
+// ═══════════════════════════════════════════════════════════
+function filterCards(f, btn){
+  cardFilter=f; cardIdx=0; cardFlipped=false;
+  document.querySelectorAll('.cf-btn').forEach(b=>{b.classList.remove('on');b.className=b.className.replace(' on','');});
+  btn.classList.add('on');
+  filteredCards=f==='all'?[...CARDS]:CARDS.filter(c=>c.d===f);
+  shuffle(filteredCards);
+  renderCard();
+}
+function initCards(){
+  filterCards('all',document.querySelector('.cf-all'));
+  knowYesCnt=0; knowNoCnt=0;
+  document.getElementById('know-yes-cnt').textContent='0';
+  document.getElementById('know-no-cnt').textContent='0';
+}
+function renderCard(){
+  if(!filteredCards.length)return;
+  const c=filteredCards[cardIdx];
+  document.getElementById('flash-q').textContent=c.q;
+  document.getElementById('flash-a').textContent=c.a;
+  document.getElementById('flash-back').style.background=c.col;
+  document.getElementById('flash-count').textContent=(cardIdx+1)+'/'+filteredCards.length;
+  document.getElementById('flash-tag').textContent='Dia '+(c.d+1)+' — '+DIAS[c.d].name;
+  document.getElementById('flash-inner').classList.remove('flipped');
+  cardFlipped=false;
+}
+function flipCard(){document.getElementById('flash-inner').classList.toggle('flipped');cardFlipped=!cardFlipped;}
+function nextCard(){cardIdx=(cardIdx+1)%filteredCards.length;renderCard();}
+function prevCard(){cardIdx=(cardIdx-1+filteredCards.length)%filteredCards.length;renderCard();}
+function knowYes(){knowYesCnt++;document.getElementById('know-yes-cnt').textContent=knowYesCnt;nextCard();}
+function knowNo(){knowNoCnt++;document.getElementById('know-no-cnt').textContent=knowNoCnt;nextCard();}
+
+// ═══════════════════════════════════════════════════════════
+// QUIZ
+// ═══════════════════════════════════════════════════════════
+function setQuizFilter(f,btn){
+  quizFilter=f;
+  document.querySelectorAll('.qf-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function startQuiz(){
+  let pool=quizFilter==='all'?[...QUIZ]:QUIZ.filter(q=>q.d===quizFilter);
+  shuffle(pool);
+  quizQ=pool.slice(0,Math.min(pool.length,15));
+  quizIdx=0; quizCorrect=0; quizWrong=0;
+  document.getElementById('quiz-area').style.display='none';
+  document.getElementById('quiz-play').style.display='flex';
+  document.getElementById('quiz-result').style.display='none';
+  showQ();
+}
+function showQ(){
+  if(quizIdx>=quizQ.length){showResult();return;}
+  quizAnswered=false;
+  const q=quizQ[quizIdx];
+  document.getElementById('quiz-num').textContent='Questão '+(quizIdx+1)+' de '+quizQ.length;
+  document.getElementById('quiz-prog').style.width=((quizIdx+1)/quizQ.length*100)+'%';
+  document.getElementById('quiz-q').textContent=q.q;
+  document.getElementById('quiz-exp').className='quiz-exp';
+  document.getElementById('quiz-next').style.display='none';
+  document.getElementById('quiz-score-live').textContent='✅'+quizCorrect+' ❌'+quizWrong;
+  const opts=document.getElementById('quiz-opts');
+  opts.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='quiz-opt';
+    btn.textContent=opt;
+    btn.onclick=()=>selectAns(i);
+    opts.appendChild(btn);
+  });
+}
+function selectAns(chosen){
+  if(quizAnswered)return;
+  quizAnswered=true;
+  const q=quizQ[quizIdx];
+  document.querySelectorAll('.quiz-opt').forEach((btn,i)=>{
+    if(i===q.ans)btn.className='quiz-opt correct';
+    else if(i===chosen&&i!==q.ans)btn.className='quiz-opt wrong';
+    else btn.className='quiz-opt revealed';
+    btn.disabled=true;
+  });
+  if(chosen===q.ans)quizCorrect++;else quizWrong++;
+  document.getElementById('quiz-score-live').textContent='✅'+quizCorrect+' ❌'+quizWrong;
+  const exp=document.getElementById('quiz-exp');
+  exp.innerHTML='<strong>📖 Explicação:</strong> '+q.exp;
+  exp.className='quiz-exp show';
+  document.getElementById('quiz-next').style.display='block';
+}
+function nextQ(){quizIdx++;showQ();}
+function showResult(){
+  document.getElementById('quiz-play').style.display='none';
+  document.getElementById('quiz-result').style.display='flex';
+  const pct=Math.round(quizCorrect/quizQ.length*100);
+  document.getElementById('result-pct').textContent=pct+'%';
+  document.getElementById('result-pct').style.color=pct>=70?'var(--green)':'var(--red)';
+  document.getElementById('r-correct').textContent=quizCorrect;
+  document.getElementById('r-wrong').textContent=quizWrong;
+  document.getElementById('r-total').textContent=quizQ.length;
+  let msg='';
+  if(pct>=80)msg='🏆 Excelente! Continue nesse ritmo!';
+  else if(pct>=70)msg='✅ Aprovada! Revise os erros para consolidar.';
+  else msg='📚 Revise os módulos e tente novamente. Foco!';
+  document.getElementById('result-msg').textContent=msg;
+}
+function restartQuiz(){
+  document.getElementById('quiz-area').style.display='flex';
+  document.getElementById('quiz-play').style.display='none';
+  document.getElementById('quiz-result').style.display='none';
+}
+
+// ═══════════════════════════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════════════════════════
+const MODES={focus:1500,short:300,long:900};
+function setMode(m,btn){
+  tMode=m; resetTimer();
+  document.querySelectorAll('.tm-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function toggleTimer(){
+  if(tRunning){clearInterval(tInterval);tRunning=false;document.getElementById('t-start').textContent='Continuar';}
+  else{
+    tRunning=true;
+    document.getElementById('t-start').textContent='Pausar';
+    const total=MODES[tMode];
+    document.getElementById('t-label').textContent=tMode==='focus'?'FOCO TOTAL':tMode==='short'?'PAUSA CURTA':'PAUSA LONGA';
+    tInterval=setInterval(()=>{
+      tSecs--;
+      updateTimerDisplay();
+      const arc=CIRC*(1-tSecs/total);
+      document.getElementById('ring-arc').setAttribute('stroke-dashoffset',arc);
+      if(tSecs<=0){
+        clearInterval(tInterval);tRunning=false;
+        document.getElementById('t-start').textContent='Iniciar';
+        document.getElementById('t-label').textContent=tMode==='focus'?'✓ Sessão concluída!':'✓ Pausa concluída!';
+        if(tMode==='focus'){
+          S.sessions_today++;S.total_mins+=25;
+          const today=new Date().toDateString();
+          if(S.last_date!==today){
+            S.streak=S.last_date===new Date(Date.now()-86400000).toDateString()?S.streak+1:1;
+            S.sessions_today=1;S.last_date=today;
+          }
+          save();updateTimerStats();
+        }
+      }
+    },1000);
+  }
+}
+function resetTimer(){
+  clearInterval(tInterval);tRunning=false;
+  tSecs=MODES[tMode];
+  document.getElementById('t-start').textContent='Iniciar';
+  document.getElementById('ring-arc').setAttribute('stroke-dashoffset','0');
+  updateTimerDisplay();
+}
+function updateTimerDisplay(){
+  const m=Math.floor(tSecs/60),s=tSecs%60;
+  document.getElementById('t-display').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function updateTimerStats(){
+  document.getElementById('t-today').textContent=S.sessions_today;
+  document.getElementById('t-total').textContent=Math.round(S.total_mins/60*10)/10+'h';
+  document.getElementById('t-streak').textContent=S.streak;
+  document.getElementById('t-log-text').textContent=S.sessions_today>0?S.sessions_today+' sessão(ões) — '+(S.sessions_today*25)+' min de foco hoje':'Nenhuma sessão concluída hoje.';
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+load();
+updateHome();
+initCards();
+updateTimerDisplay();
+updateTimerStats();
+</script>
+</body>
+</html>
